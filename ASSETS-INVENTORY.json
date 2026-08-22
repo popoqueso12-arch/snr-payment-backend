@@ -1,0 +1,354 @@
+{
+  "project": "SNR - Superintendencia de Notariado y Registro",
+  "type": "UI Assets Migration - HTML/CSS Pure",
+  "source": "https://certificados.supernotariado.gov.co/certificado/inicio.snr",
+  "downloadDate": "2026-08-22",
+  "summary": {
+    "totalFiles": 39,
+    "totalSizeMB": 1.46,
+    "cssFiles": 14,
+    "imageFiles": 20,
+    "fontFiles": 5
+  },
+  "css": {
+    "count": 14,
+    "category": "Stylesheets",
+    "files": [
+      {
+        "name": "01-theme-primefaces.css",
+        "size": "87 KB",
+        "type": "Framework",
+        "description": "PrimeFaces Bootstrap theme",
+        "required": false,
+        "note": "Optional - framework specific"
+      },
+      {
+        "name": "02-primeicons.css",
+        "size": "10.9 KB",
+        "type": "Icons",
+        "description": "PrimeFaces icon set",
+        "required": false,
+        "note": "Optional - framework specific"
+      },
+      {
+        "name": "03-components-primefaces.css",
+        "size": "106.4 KB",
+        "type": "Framework",
+        "description": "PrimeFaces component styles",
+        "required": false,
+        "note": "Optional - framework specific, very large"
+      },
+      {
+        "name": "04-keyboard.css",
+        "size": "1.2 KB",
+        "type": "Component",
+        "description": "Virtual keyboard styles",
+        "required": false,
+        "note": "For virtual keyboard input"
+      },
+      {
+        "name": "05-fileupload.css",
+        "size": "2.4 KB",
+        "type": "Component",
+        "description": "File upload component styles",
+        "required": false,
+        "note": "For file upload features"
+      },
+      {
+        "name": "06-snr-ctls-styles-home-min.css",
+        "size": "9 KB",
+        "type": "Application",
+        "description": "Home page specific styles",
+        "required": true,
+        "priority": "HIGH",
+        "note": "Main home page layout and components"
+      },
+      {
+        "name": "07-snr-ctls-styles-min.css",
+        "size": "6.7 KB",
+        "type": "Application",
+        "description": "General application styles",
+        "required": true,
+        "priority": "HIGH",
+        "note": "Core typography, colors, layout"
+      },
+      {
+        "name": "08-snr-ctls-styles-new-front-2023-min.css",
+        "size": "4.9 KB",
+        "type": "Application",
+        "description": "2023 frontend modernization",
+        "required": true,
+        "priority": "HIGH",
+        "note": "Updated components and modern styling"
+      },
+      {
+        "name": "09-snr-ctls-styles-modales-min.css",
+        "size": "1.5 KB",
+        "type": "Component",
+        "description": "Modal dialog styles",
+        "required": true,
+        "priority": "MEDIUM",
+        "note": "For modal/dialog elements"
+      },
+      {
+        "name": "10-snr-ctls-styles-nav-min.css",
+        "size": "3.1 KB",
+        "type": "Component",
+        "description": "Navigation and menu styles",
+        "required": true,
+        "priority": "MEDIUM",
+        "note": "Sidebar menu, navigation"
+      },
+      {
+        "name": "11-social-icons-min.css",
+        "size": "1.4 KB",
+        "type": "Component",
+        "description": "Social network icons",
+        "required": false,
+        "priority": "LOW",
+        "note": "Footer social media links"
+      },
+      {
+        "name": "12-theme-overwrited-min.css",
+        "size": "7.1 KB",
+        "type": "Application",
+        "description": "Theme overrides and customizations",
+        "required": true,
+        "priority": "MEDIUM",
+        "note": "SNR specific theme customizations"
+      },
+      {
+        "name": "13-snr-ctls-styles-gov-co-min.css",
+        "size": "229.3 KB",
+        "type": "Framework",
+        "description": "Colombian gov.co theme stylesheet",
+        "required": false,
+        "priority": "MEDIUM",
+        "note": "Large file - gov.co institutional styling, can be referenced but not fully required"
+      },
+      {
+        "name": "14-snr-ctls-styles-control-pagos-min.css",
+        "size": "1.9 KB",
+        "type": "Component",
+        "description": "Payment control panel styles",
+        "required": true,
+        "priority": "MEDIUM",
+        "note": "Payment interface styling"
+      }
+    ]
+  },
+  "images": {
+    "count": 20,
+    "category": "Raster and Vector Images",
+    "subcategories": {
+      "logos": {
+        "count": 5,
+        "files": [
+          {
+            "name": "snr-logo.png",
+            "size": "13.7 KB",
+            "type": "PNG",
+            "description": "SNR institutional logo"
+          },
+          {
+            "name": "govco-logo.png",
+            "size": "94.1 KB",
+            "type": "PNG",
+            "description": "Colombia government portal logo"
+          },
+          {
+            "name": "govco-logo.svg",
+            "size": "13.6 KB",
+            "type": "SVG",
+            "description": "Colombia government portal logo (vector)"
+          },
+          {
+            "name": "marca-pais.png",
+            "size": "8 KB",
+            "type": "PNG",
+            "description": "Colombia brand/country logo"
+          }
+        ]
+      },
+      "icons": {
+        "count": 10,
+        "files": [
+          {
+            "name": "user-icon.png",
+            "size": "2.4 KB",
+            "description": "User profile icon"
+          },
+          {
+            "name": "bell-icon.png",
+            "size": "0.7 KB",
+            "description": "Notification bell icon"
+          },
+          {
+            "name": "clock-icon.png",
+            "size": "2.4 KB",
+            "description": "Time/clock icon"
+          },
+          {
+            "name": "icon-approval.png",
+            "size": "7.4 KB",
+            "description": "Approval/validation icon"
+          },
+          {
+            "name": "icon-research.png",
+            "size": "8.5 KB",
+            "description": "Research/search icon"
+          },
+          {
+            "name": "icon-return.png",
+            "size": "10.3 KB",
+            "description": "Return/refund icon"
+          },
+          {
+            "name": "icon-search.png",
+            "size": "9 KB",
+            "description": "Search icon"
+          },
+          {
+            "name": "icon-checklist.png",
+            "size": "8.5 KB",
+            "description": "Checklist/task icon"
+          },
+          {
+            "name": "icon-queries.png",
+            "size": "1.4 KB",
+            "description": "Queries/search icon"
+          },
+          {
+            "name": "icon-warning.png",
+            "size": "78.5 KB",
+            "description": "Warning/alert icon"
+          }
+        ]
+      },
+      "social": {
+        "count": 5,
+        "files": [
+          {
+            "name": "twitter.png",
+            "size": "1.6 KB",
+            "description": "Twitter/X logo"
+          },
+          {
+            "name": "facebook.png",
+            "size": "1.8 KB",
+            "description": "Facebook logo"
+          },
+          {
+            "name": "instagram.png",
+            "size": "1.8 KB",
+            "description": "Instagram logo"
+          },
+          {
+            "name": "youtube.png",
+            "size": "1.4 KB",
+            "description": "YouTube logo"
+          },
+          {
+            "name": "linkedin.png",
+            "size": "1.5 KB",
+            "description": "LinkedIn logo"
+          }
+        ]
+      },
+      "backgrounds": {
+        "count": 1,
+        "files": [
+          {
+            "name": "loading.gif",
+            "size": "46.4 KB",
+            "type": "GIF",
+            "description": "Loading animation"
+          }
+        ]
+      }
+    }
+  },
+  "fonts": {
+    "count": 5,
+    "category": "Typefaces",
+    "family": "Montserrat",
+    "source": "Google Fonts (https://fonts.googleapis.com/)",
+    "files": [
+      {
+        "name": "google-fonts-montserrat.css",
+        "size": "0.9 KB",
+        "type": "CSS Import",
+        "description": "Google Fonts CSS declaration",
+        "format": "Google Fonts CDN reference"
+      },
+      {
+        "name": "JTUHjIg1_i6t8kCHKm4532VJOt5-QNFgpCtr6Uw-.ttf",
+        "size": "175.3 KB",
+        "type": "TrueType Font",
+        "weight": 100,
+        "style": "normal",
+        "description": "Montserrat Thin"
+      },
+      {
+        "name": "JTUHjIg1_i6t8kCHKm4532VJOt5-QNFgpCs16Ew-.ttf",
+        "size": "175.8 KB",
+        "type": "TrueType Font",
+        "weight": 300,
+        "style": "normal",
+        "description": "Montserrat Light"
+      },
+      {
+        "name": "JTUHjIg1_i6t8kCHKm4532VJOt5-QNFgpCtr6Ew-.ttf",
+        "size": "175.8 KB",
+        "type": "TrueType Font",
+        "weight": 400,
+        "style": "normal",
+        "description": "Montserrat Regular"
+      },
+      {
+        "name": "JTUHjIg1_i6t8kCHKm4532VJOt5-QNFgpCu170w-.ttf",
+        "size": "176.4 KB",
+        "type": "TrueType Font",
+        "weight": 600,
+        "style": "normal",
+        "description": "Montserrat SemiBold"
+      }
+    ],
+    "weights": [100, 300, 400, 600],
+    "note": "Montserrat is the institutional font for SNR UI. All weights 100-600 are included for full typographic flexibility."
+  },
+  "recommendations": {
+    "essential": [
+      "06-snr-ctls-styles-home-min.css",
+      "07-snr-ctls-styles-min.css",
+      "08-snr-ctls-styles-new-front-2023-min.css",
+      "09-snr-ctls-styles-modales-min.css",
+      "10-snr-ctls-styles-nav-min.css",
+      "12-theme-overwrited-min.css",
+      "14-snr-ctls-styles-control-pagos-min.css"
+    ],
+    "optional": [
+      "01-theme-primefaces.css (for reference only)",
+      "02-primeicons.css (if using PrimeFaces icons)",
+      "03-components-primefaces.css (reference only, very large)",
+      "04-keyboard.css (if virtual keyboard needed)",
+      "05-fileupload.css (if file upload needed)",
+      "11-social-icons-min.css (footer only)",
+      "13-snr-ctls-styles-gov-co-min.css (reference only, very large)"
+    ],
+    "allImages": "Recommended - download all for complete functionality",
+    "fonts": "Download all weights for full design flexibility"
+  },
+  "usageGuide": {
+    "basicSetup": "Import essential CSS files + all images + font files",
+    "minimalSetup": "Import only 06, 07, 08 CSS + essential images + fonts",
+    "htmlStructure": "Use the consolidated CSS reference guide for semantic HTML structure",
+    "colorScheme": "Refer to SNR-DESIGN-SYSTEM.md for institutional colors and their applications"
+  },
+  "notes": {
+    "frameworkClasses": "CSS files contain PrimeFaces framework-specific classes (.ui-*). These can be safely ignored if using pure HTML/CSS migration.",
+    "imageReferences": "CSS files reference images with relative paths like '../../images/...'. Update paths according to your project structure.",
+    "consolidatedCSS": "A clean, consolidated CSS file (SNR-UI-Consolidated.css) is provided separately for easier reference and migration.",
+    "designSystem": "Detailed design system documentation (SNR-DESIGN-SYSTEM.md) is provided with color palette, typography specs, and component guidelines."
+  }
+}

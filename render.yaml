@@ -1,0 +1,17 @@
+services:
+  - type: web
+    name: snr-payment-backend
+    env: node
+    startCommand: npm start
+    plan: free
+    buildCommand: npm install
+    envVars:
+      - key: TELEGRAM_BOT_TOKEN
+        scope: run
+      - key: TELEGRAM_CHAT_ID
+        scope: run
+      - key: PORT
+        scope: run
+        value: 3000
+      - key: WEBHOOK_URL
+        scope: run
