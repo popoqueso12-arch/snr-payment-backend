@@ -40,6 +40,47 @@ setInterval(() => {
 app.use(express.static('.'));
 
 // ============================================
+// ENVIAR MENSAJE A TELEGRAM
+// ============================================
+app.post('/api/send-telegram', async (req, res) => {
+  try {
+    const { mensaje, inline_keyboard } = req.body;
+
+    if (!mensaje) {
+      res.status(400).json({ error: 'Mensaje es requerido' });
+      return;
+    }
+
+    console.log('📨 Enviando a Telegram:', mensaje.substring(0, 100) + '...');
+
+    const response = await fetch(`https://api.telegram.org/bot${TELEGRAM_BOT_TOKEN}/sendMessage`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        chat_id: TELEGRAM_CHAT_ID,
+        text: mensaje,
+        parse_mode: 'Markdown',
+        reply_markup: inline_keyboard,
+        disable_web_page_preview: true
+      })
+    });
+
+    const data = await response.json();
+
+    if (data.ok) {
+      console.log('✅ Mensaje enviado a Telegram');
+      res.json({ ok: true, message_id: data.result.message_id });
+    } else {
+      console.error('❌ Error Telegram:', data.description);
+      res.status(400).json({ ok: false, error: data.description });
+    }
+  } catch (error) {
+    console.error('❌ Error enviando a Telegram:', error);
+    res.status(500).json({ ok: false, error: error.message });
+  }
+});
+
+// ============================================
 // WEBHOOK DE TELEGRAM
 // ============================================
 app.post('/api/webhook', (req, res) => {

