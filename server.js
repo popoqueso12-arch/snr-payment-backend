@@ -255,7 +255,18 @@ app.get('/api/debug/estados', (req, res) => {
 // CONFIGURAR WEBHOOK EN TELEGRAM (AUTOMÁTICO)
 // ============================================
 async function configurarWebhookTelegram() {
-  const WEBHOOK_URL = process.env.WEBHOOK_URL || `http://localhost:${PORT}/api/webhook`;
+  // Detectar automáticamente la URL correcta
+  let WEBHOOK_URL = process.env.WEBHOOK_URL;
+
+  if (!WEBHOOK_URL) {
+    // Si está en Render, usar la URL de Render
+    if (process.env.RENDER === 'true') {
+      WEBHOOK_URL = `https://${process.env.RENDER_EXTERNAL_HOSTNAME}/api/webhook`;
+    } else {
+      // Si es local, no configurar webhook (solo localhost)
+      WEBHOOK_URL = `http://localhost:${PORT}/api/webhook`;
+    }
+  }
 
   try {
     console.log('🔗 Configurando webhook en Telegram...');
