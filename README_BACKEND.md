@@ -30,12 +30,13 @@ npm install
 cp .env.example .env
 ```
 
-Edita `.env` con tus valores:
+Edita `.env` con tus valores reales:
 
 ```
-TELEGRAM_BOT_TOKEN=8952571695:AAHr5qHDQ7Hu0LoqGS49jUWg9MYFjO1MaBw
-TELEGRAM_CHAT_ID=-1004389419498
+TELEGRAM_BOT_TOKEN=tu_token_aqui_sin_comillas
+TELEGRAM_CHAT_ID=tu_chat_id_aqui_sin_comillas
 PORT=3000
+WEBHOOK_URL=http://localhost:3000/api/webhook
 ```
 
 ### 3. Arrancar servidor

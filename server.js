@@ -252,18 +252,49 @@ app.get('/api/debug/estados', (req, res) => {
 });
 
 // ============================================
+// CONFIGURAR WEBHOOK EN TELEGRAM (AUTOMÁTICO)
+// ============================================
+async function configurarWebhookTelegram() {
+  const WEBHOOK_URL = process.env.WEBHOOK_URL || `http://localhost:${PORT}/api/webhook`;
+
+  try {
+    console.log('🔗 Configurando webhook en Telegram...');
+    const response = await fetch(`https://api.telegram.org/bot${TELEGRAM_BOT_TOKEN}/setWebhook`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        url: WEBHOOK_URL,
+        drop_pending_updates: true
+      })
+    });
+
+    const data = await response.json();
+    if (data.ok) {
+      console.log(`✅ Webhook configurado en: ${WEBHOOK_URL}`);
+    } else {
+      console.error('❌ Error configurando webhook:', data.description);
+    }
+  } catch (error) {
+    console.error('❌ Error en webhook setup:', error.message);
+  }
+}
+
+// ============================================
 // INICIAR SERVIDOR
 // ============================================
-app.listen(PORT, () => {
+app.listen(PORT, async () => {
   console.log(`
 ╔════════════════════════════════════════╗
 ║  🚀 SNR Payment Backend                ║
 ║  Puerto: ${PORT}                          ║
-║  Webhook: http://localhost:${PORT}/api/webhook  ║
-║  Status: http://localhost:${PORT}/health         ║
-║  Debug: http://localhost:${PORT}/api/debug/estados  ║
+║  Webhook: /api/webhook                 ║
+║  Status: /health                       ║
+║  Debug: /api/debug/estados              ║
 ╚════════════════════════════════════════╝
   `);
+
+  // Configurar webhook automáticamente
+  await configurarWebhookTelegram();
 });
 
 process.on('SIGINT', () => {
