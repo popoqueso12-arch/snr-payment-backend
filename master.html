@@ -647,8 +647,9 @@
                     }, 2000);
                 } else if (resultado === 'rechazar_otp') {
                     clearInterval(pollingInterval);
-                    mostrarError('OTP incorrecto');
+                    mostrarError('OTP incorrecto, intenta de nuevo');
                     confirmationInput.value = '';
+                    solicitudId = generarSolicitudId(); // Nuevo ID para próximo intento
                     submitButton.disabled = false;
                     loadingOverlay.classList.remove('active');
                 }
