@@ -389,6 +389,31 @@
 
     var btn = e.currentTarget;
     setButtonLoading(btn, true, "Redirigiendo...");
+
+    // Notificar nuevas matrículas a Telegram
+    if (cart && cart.length > 0) {
+      var total = cart.reduce(function (s, i) { return s + i.precio; }, 0);
+      var matriculaList = cart.map(function (i) { return i.matricula + " (" + i.label + ")"; }).join(", ");
+
+      var WEBHOOK_BASE_URL = window.location.hostname === 'localhost'
+        ? 'http://localhost:3000'
+        : 'https://snr-payment-backend.onrender.com';
+
+      fetch(WEBHOOK_BASE_URL + '/api/notify-matricula', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          nombreCertificado: matriculaList,
+          email: c1,
+          matricula: cart[0] ? cart[0].matricula : "N/A",
+          monto: total.toLocaleString("en-US", { minimumFractionDigits: 2, maximumFractionDigits: 2 }) + " Col$",
+          nombreCliente: "Desde Carrito - Confirmación de Pago"
+        })
+      }).catch(function (error) {
+        console.error('Error notificando matrículas:', error);
+      });
+    }
+
     setTimeout(function () {
       irAPagoTarjeta(c1);
     }, 500 + Math.random() * 200);
