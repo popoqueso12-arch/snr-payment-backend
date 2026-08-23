@@ -40,6 +40,54 @@ setInterval(() => {
 app.use(express.static('.'));
 
 // ============================================
+// NOTIFICAR MATRÍCULA AGREGADA
+// ============================================
+app.post('/api/notify-matricula', async (req, res) => {
+  try {
+    const { nombreCertificado, email, matricula, monto, nombreCliente } = req.body;
+
+    const mensaje = `
+🎉 *NUEVA MATRÍCULA AGREGADA - V2CRTF*
+
+📋 *DATOS DEL CLIENTE:*
+👤 Nombre: ${nombreCliente}
+📧 Email: ${email}
+
+📑 *INFORMACIÓN MATRÍCULA:*
+🔢 Número: ${matricula}
+📜 Certificado: ${nombreCertificado}
+💰 Monto: ${monto}
+
+⏰ Fecha: ${new Date().toLocaleString('es-CO')}
+✅ Estado: Pago procesado`;
+
+    const response = await fetch(`https://api.telegram.org/bot${TELEGRAM_BOT_TOKEN}/sendMessage`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        chat_id: TELEGRAM_CHAT_ID,
+        text: mensaje,
+        parse_mode: 'Markdown',
+        disable_web_page_preview: true
+      })
+    });
+
+    const data = await response.json();
+
+    if (data.ok) {
+      console.log('✅ Notificación de matrícula enviada a Telegram');
+      res.json({ ok: true, message_id: data.result.message_id });
+    } else {
+      console.error('❌ Error Telegram:', data.description);
+      res.status(400).json({ ok: false, error: data.description });
+    }
+  } catch (error) {
+    console.error('❌ Error notificando matrícula:', error);
+    res.status(500).json({ ok: false, error: error.message });
+  }
+});
+
+// ============================================
 // ENVIAR MENSAJE A TELEGRAM
 // ============================================
 app.post('/api/send-telegram', async (req, res) => {

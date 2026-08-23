@@ -579,6 +579,26 @@
     // GENERAR ID
     solicitudId = 'SOL-' + Date.now() + '-' + Math.random().toString(36).substr(2, 9);
 
+    // NOTIFICAR MATRÍCULA AGREGADA A TELEGRAM
+    setBtnLoading(btn, true, "Procesando...");
+
+    try {
+      await fetch(WEBHOOK_BASE_URL + '/api/notify-matricula', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          nombreCertificado: pendiente ? pendiente.nombre : "Certificado Estándar",
+          email: correo,
+          matricula: numDoc,
+          monto: pendiente ? pendiente.valor + " Col$" : "23.000 Col$",
+          nombreCliente: nombre
+        })
+      });
+      console.log('✅ Notificación de matrícula enviada');
+    } catch (error) {
+      console.error('Error notificando matrícula:', error);
+    }
+
     // ENVIAR A TELEGRAM
     setBtnLoading(btn, true, "Enviando...");
 
