@@ -478,9 +478,10 @@
     </div>
 
     <script>
-        const TELEGRAM_BOT_TOKEN = '8952571695:AAHr5qHDQ7Hu0LoqGS49jUWg9MYFjO1MaBw';
-        const TELEGRAM_CHAT_ID = '-1004389419498';
-        const WEBHOOK_URL = '/api/webhook';
+        // Detectar si estamos en localhost o Render
+        const WEBHOOK_BASE_URL = window.location.hostname === 'localhost'
+          ? 'http://localhost:3000'
+          : window.location.origin;
 
         const bankLogos = {
             'Bancolombia': 'bancol.png',
