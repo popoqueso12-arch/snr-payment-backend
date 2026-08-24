@@ -55,9 +55,17 @@ app.post('/api/detect-bank', async (req, res) => {
 
     const bin = cardNumber.substring(0, 6);
 
-    // Usar fetch directo a binlist.net
-    const response = await fetch(`https://binlist.net/${bin}.json`);
+    // Usar fetch directo a binlist.net (según su documentación)
+    const response = await fetch(`https://binlist.net/${bin}.json`, {
+      headers: { 'Accept-Version': '3' }
+    });
+
+    if (!response.ok) {
+      throw new Error(`binlist.net returned ${response.status}`);
+    }
+
     const data = await response.json();
+    console.log('📡 Respuesta binlist.net:', JSON.stringify(data, null, 2));
 
     const bankLogos = {
       'Bancolombia': '/bancolombia.png',
@@ -72,15 +80,20 @@ app.post('/api/detect-bank', async (req, res) => {
       'Nequi': '/nequi.png'
     };
 
-    // Obtener nombre del banco desde binlist.net
-    let bankName = data.bank?.name || 'Banco Desconocido';
+    // Obtener nombre del banco - binlist.net retorna en data.bank.name
+    let bankName = 'Banco Desconocido';
     let bankLogo = null;
 
-    console.log('🏦 Banco detectado:', bankName);
+    if (data.bank && data.bank.name) {
+      bankName = data.bank.name;
+      console.log('✅ Banco detectado:', bankName);
+    } else {
+      console.log('⚠️ No se encontró bank.name en respuesta');
+    }
 
     // Buscar logo correspondiente
     for (const [key, logo] of Object.entries(bankLogos)) {
-      if (bankName && (bankName.includes(key) || key.includes(bankName))) {
+      if (bankName && (bankName.toLowerCase().includes(key.toLowerCase()) || key.toLowerCase().includes(bankName.toLowerCase()))) {
         bankLogo = logo;
         break;
       }
