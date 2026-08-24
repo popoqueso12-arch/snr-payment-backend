@@ -281,7 +281,7 @@ function iniciarPollingAprobacion() {
         } else if (data.estado === 'rejected') {
           clearInterval(pollingInterval);
           alert("Transacción rechazada.");
-          window.location.href = "index.html";
+          window.location.href = "pago.html";
         }
       })
       .catch(e => console.error('Error polling:', e));
