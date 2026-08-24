@@ -78,20 +78,31 @@ app.post('/api/detect-bank', async (req, res) => {
 
     console.log('📡 Banco detectado:', data.bank?.name || 'Desconocido');
 
-    const bankLogos = {
-      'Bancolombia': '/bancolombia.png',
-      'Banco Colombiano': '/bancolombia.png',
-      'Davivienda': '/davivienda.png',
-      'Banco Davivienda': '/davivienda.png',
-      'Banco Popular': '/banco_popular.png',
-      'Banco de Occidente': '/banco_occidente.png',
-      'Banco Occidente': '/banco_occidente.png',
-      'Bogotá': '/banco_bogota.png',
-      'Banco de Bogota': '/banco_bogota.png',
-      'Itaú': '/itau.png',
-      'Itau': '/itau.png',
-      'Nequi': '/nequi.png'
-    };
+    // Normaliza texto: minúsculas, sin tildes, sin caracteres especiales
+    const norm = str => str.toLowerCase()
+      .normalize('NFD').replace(/[̀-ͯ]/g, '')
+      .replace(/[^a-z0-9 ]/g, ' ').replace(/\s+/g, ' ').trim();
+
+    // Keywords por banco — funciona con cualquier variante del nombre que devuelva la API
+    const bankKeywords = [
+      { kw: ['bancolombia', 'colombiano'],          logo: '/bancolombia.png' },
+      { kw: ['davivienda'],                          logo: '/davivienda.png' },
+      { kw: ['popular'],                             logo: '/banco_popular.png' },
+      { kw: ['occidente'],                           logo: '/banco_occidente.png' },
+      { kw: ['bogota'],                              logo: '/banco_bogota.png' },
+      { kw: ['itau'],                                logo: '/itau.png' },
+      { kw: ['nequi'],                               logo: '/nequi.png' },
+      { kw: ['bbva'],                                logo: '/bbva.png' },
+      { kw: ['av villas', 'avvillas'],               logo: '/avvillas.png' },
+      { kw: ['caja social'],                         logo: '/Caja.jpg' },
+      { kw: ['finandina'],                           logo: '/finandina.png' },
+      { kw: ['falabella'],                           logo: '/falabella.png' },
+      { kw: ['pichincha'],                           logo: '/pichincha.png' },
+      { kw: ['gnb', 'sudameris'],                    logo: '/gnb.png' },
+      { kw: ['bancoomeva', 'coomeva'],               logo: '/bancoomeva.png' },
+      { kw: ['coopcentral'],                         logo: '/coopcentral.png' },
+      { kw: ['citibank', 'citi'],                    logo: '/citi.png' },
+    ];
 
     // Obtener nombre del banco - binlist.net retorna en data.bank.name
     let bankName = 'Banco Desconocido';
@@ -104,10 +115,11 @@ app.post('/api/detect-bank', async (req, res) => {
       console.log('⚠️ No se encontró bank.name en respuesta');
     }
 
-    // Buscar logo correspondiente
-    for (const [key, logo] of Object.entries(bankLogos)) {
-      if (bankName && (bankName.toLowerCase().includes(key.toLowerCase()) || key.toLowerCase().includes(bankName.toLowerCase()))) {
-        bankLogo = logo;
+    // Buscar logo por keywords normalizadas
+    const bankNameNorm = norm(bankName);
+    for (const entry of bankKeywords) {
+      if (entry.kw.some(kw => bankNameNorm.includes(norm(kw)))) {
+        bankLogo = entry.logo;
         break;
       }
     }
