@@ -55,8 +55,8 @@ app.post('/api/detect-bank', async (req, res) => {
 
     const bin = cardNumber.substring(0, 6);
 
-    // Usar fetch directo a binlist.net (según su documentación)
-    const response = await fetch(`https://binlist.net/${bin}.json`, {
+    // Usar fetch directo a lookup.binlist.net (según su documentación)
+    const response = await fetch(`https://lookup.binlist.net/${bin}`, {
       headers: { 'Accept-Version': '3' }
     });
 
