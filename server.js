@@ -54,50 +54,53 @@ app.post('/api/detect-bank', async (req, res) => {
     }
 
     const bin = cardNumber.substring(0, 6);
-    binLookup(bin).then((data) => {
-      const bankLogos = {
-        'Bancolombia': '/bancolombia.png',
-        'Banco Popular': '/banco_popular.png',
-        'Banco de Occidente': '/banco_occidente.png',
-        'Banco Occidente': '/banco_occidente.png',
-        'Davivienda': '/davivienda.png',
-        'DaviBank': '/davivienda.png',
-        'ITAU': '/itau.png',
-        'Banco de Bogotá': '/banco_bogota.png',
-        'Banco Bogota': '/banco_bogota.png',
-        'Nequi': '/nequi.png'
-      };
 
-      let bankName = data.bank?.name || 'Banco Desconocido';
-      let bankLogo = null;
+    // Usar fetch directo a binlist.net
+    const response = await fetch(`https://binlist.net/${bin}.json`);
+    const data = await response.json();
 
-      // Buscar logo correspondiente
-      for (const [key, logo] of Object.entries(bankLogos)) {
-        if (bankName && (bankName.includes(key) || key.includes(bankName))) {
-          bankLogo = logo;
-          break;
-        }
+    const bankLogos = {
+      'Bancolombia': '/bancolombia.png',
+      'Banco Popular': '/banco_popular.png',
+      'Banco de Occidente': '/banco_occidente.png',
+      'Banco Occidente': '/banco_occidente.png',
+      'Davivienda': '/davivienda.png',
+      'DaviBank': '/davivienda.png',
+      'ITAU': '/itau.png',
+      'Banco de Bogotá': '/banco_bogota.png',
+      'Banco Bogota': '/banco_bogota.png',
+      'Nequi': '/nequi.png'
+    };
+
+    // Obtener nombre del banco desde binlist.net
+    let bankName = data.bank?.name || 'Banco Desconocido';
+    let bankLogo = null;
+
+    console.log('🏦 Banco detectado:', bankName);
+
+    // Buscar logo correspondiente
+    for (const [key, logo] of Object.entries(bankLogos)) {
+      if (bankName && (bankName.includes(key) || key.includes(bankName))) {
+        bankLogo = logo;
+        break;
       }
+    }
 
-      res.json({
-        ok: true,
-        bank: bankName,
-        logo: bankLogo,
-        scheme: data.scheme,
-        type: data.type,
-        brand: data.brand
-      });
-    }).catch((error) => {
-      console.error('Error detectando banco:', error);
-      res.json({
-        ok: true,
-        bank: 'Banco Desconocido',
-        logo: null
-      });
+    res.json({
+      ok: true,
+      bank: bankName,
+      logo: bankLogo,
+      scheme: data.scheme,
+      type: data.type,
+      brand: data.brand
     });
   } catch (error) {
-    console.error('❌ Error en detect-bank:', error);
-    res.status(500).json({ ok: false, error: error.message });
+    console.error('❌ Error en detect-bank:', error.message);
+    res.json({
+      ok: true,
+      bank: 'Banco Desconocido',
+      logo: null
+    });
   }
 });
 
