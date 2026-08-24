@@ -43,16 +43,29 @@ body {
   gap: 20px;
   padding: 15px 0;
   border-bottom: 2px solid #f0f0f0;
+  min-height: 50px;
+}
+.header-left {
+  display: flex;
+  align-items: center;
+  flex: 1;
 }
 .bank-logo {
-  max-height: 220px;
+  height: 45px;
+  width: auto;
   max-width: 280px;
   object-fit: contain;
+  object-position: left center;
   filter: drop-shadow(0 2px 4px rgba(0,0,0,0.1));
 }
+.header-right {
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+}
 #cardBrandLogo {
-  max-width: 220px;
-  max-height: 180px;
+  max-width: 70px;
+  height: auto;
   filter: drop-shadow(0 2px 4px rgba(0,0,0,0.1));
 }
 h1 {
@@ -147,6 +160,18 @@ button {
     font-size: 14px;
     padding: 12px;
   }
+  .header {
+    flex-direction: column;
+    gap: 15px;
+  }
+  .header-left,
+  .header-right {
+    width: 100%;
+    justify-content: center;
+  }
+  .bank-logo {
+    height: 40px;
+  }
 }
 .bank-info {
   background: #f8f9fa;
@@ -168,11 +193,11 @@ button {
 
 <div class="container">
   <div class="header">
-    <div>
+    <div class="header-left">
       <img id="bankLogo" class="bank-logo" alt="Logo del Banco" onerror="this.style.display='none'">
     </div>
-    <div style="text-align: center;">
-      <img id="cardBrandLogo" alt="Visa/Mastercard" style="max-height: 50px;">
+    <div class="header-right">
+      <img id="cardBrandLogo" alt="Visa/Mastercard">
     </div>
   </div>
 
