@@ -80,14 +80,16 @@ app.post('/api/detect-bank', async (req, res) => {
 
     const bankLogos = {
       'Bancolombia': '/bancolombia.png',
+      'Banco Colombiano': '/bancolombia.png',
+      'Davivienda': '/davivienda.png',
+      'Banco Davivienda': '/davivienda.png',
       'Banco Popular': '/banco_popular.png',
       'Banco de Occidente': '/banco_occidente.png',
       'Banco Occidente': '/banco_occidente.png',
-      'Davivienda': '/davivienda.png',
-      'DaviBank': '/davivienda.png',
-      'ITAU': '/itau.png',
-      'Banco de Bogotá': '/banco_bogota.png',
-      'Banco Bogota': '/banco_bogota.png',
+      'Bogotá': '/banco_bogota.png',
+      'Banco de Bogota': '/banco_bogota.png',
+      'Itaú': '/itau.png',
+      'Itau': '/itau.png',
       'Nequi': '/nequi.png'
     };
 
