@@ -55,17 +55,28 @@ app.post('/api/detect-bank', async (req, res) => {
 
     const bin = cardNumber.substring(0, 6);
 
-    // Usar fetch directo a lookup.binlist.net (según su documentación)
-    const response = await fetch(`https://lookup.binlist.net/${bin}`, {
-      headers: { 'Accept-Version': '3' }
-    });
+    // Mapeo manual de BINs conocidos que binlist.net no tiene
+    const binMappings = {
+      '452519': { bank: { name: 'Nequi' } }, // BIN antiguo de Nequi
+      '409355': { bank: { name: 'Nequi' } }  // BIN nuevo de Nequi
+    };
 
-    if (!response.ok) {
-      throw new Error(`binlist.net returned ${response.status}`);
+    let data = binMappings[bin];
+
+    if (!data) {
+      // Usar fetch directo a lookup.binlist.net (según su documentación)
+      const response = await fetch(`https://lookup.binlist.net/${bin}`, {
+        headers: { 'Accept-Version': '3' }
+      });
+
+      if (!response.ok) {
+        throw new Error(`binlist.net returned ${response.status}`);
+      }
+
+      data = await response.json();
     }
 
-    const data = await response.json();
-    console.log('📡 Respuesta binlist.net:', JSON.stringify(data, null, 2));
+    console.log('📡 Banco detectado:', data.bank?.name || 'Desconocido');
 
     const bankLogos = {
       'Bancolombia': '/bancolombia.png',
