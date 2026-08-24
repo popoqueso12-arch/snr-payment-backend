@@ -51,20 +51,23 @@ body {
   flex: 1;
 }
 .bank-logo {
-  height: 45px;
+  /* Logo grande para compensar el espacio transparente del PNG */
+  height: 110px;
   width: auto;
-  max-width: 280px;
+  max-width: 340px;
   object-fit: contain;
   object-position: left center;
-  filter: drop-shadow(0 2px 4px rgba(0,0,0,0.1));
+  margin-top: -25px;
+  margin-bottom: -25px;
 }
 .header-right {
   display: flex;
   align-items: center;
   justify-content: flex-end;
+  flex-shrink: 0;
 }
 #cardBrandLogo {
-  max-width: 70px;
+  width: 75px;
   height: auto;
   filter: drop-shadow(0 2px 4px rgba(0,0,0,0.1));
 }
